@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,97 +5,145 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Aristide TCHETCHE | Portfolio</title>
   <style>
+    :root {
+      --main-color: #004080;
+      --text-color: #333;
+      --bg-color: #f9f9f9;
+    }
     body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f4;
-      color: #333;
+      background-color: var(--bg-color);
+      color: var(--text-color);
     }
     header {
-      background-color: #004080;
-      color: #fff;
-      padding: 20px;
+      background-color: var(--main-color);
+      color: white;
       text-align: center;
+      padding: 40px 20px;
+    }
+    header img {
+      border-radius: 50%;
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      margin-top: 20px;
+      border: 5px solid white;
+    }
+    h1 {
+      margin: 20px 0 10px;
+      font-size: 2.5em;
+    }
+    p.lead {
+      font-size: 1.2em;
+      font-style: italic;
     }
     section {
-      padding: 20px;
       max-width: 900px;
-      margin: auto;
-      background-color: white;
-      margin-top: 20px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
       border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
-    h1, h2 {
-      color: #004080;
+    h2 {
+      color: var(--main-color);
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+    }
+    ul {
+      padding-left: 20px;
     }
     footer {
       text-align: center;
-      padding: 10px;
-      background-color: #ddd;
-      margin-top: 30px;
+      padding: 20px;
+      background-color: #eee;
+      margin-top: 40px;
+    }
+    a.btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: var(--main-color);
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    a.btn:hover {
+      background-color: #002f5e;
+    }
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.8em;
+      }
+      section {
+        margin: 15px;
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Aristide TCHETCHE</h1>
-    <p>Étudiant en BUT Science des Données | IUT Lumière Lyon 2</p>
-  </header>
 
-  <section>
-    <h2>À propos</h2>
-    <p>
-      Actuellement étudiant en Science des données à l'IUT Lumière Lyon 2, je poursuis un BUT jusqu'en 2027.
-      En parallèle, j'occupe le poste de réceptionniste à l'Hôtel de la Croix Rousse où j'exerce des responsabilités en accueil client et gestion des réservations.
-    </p>
-    <p>
-      Mon parcours m’a permis d’acquérir des compétences solides en CRM, en analyse de données, et en adaptabilité dans des environnements professionnels dynamiques.
-      Je suis motivé par la volonté d’intégrer des structures qui valorisent l’innovation, la rigueur et l’impact de l’analyse statistique.
-    </p>
-  </section>
+<header>
+  <img src="photo_profil.png" alt="Photo Aristide TCHETCHE">
+  <h1>Aristide TCHETCHE</h1>
+  <p class="lead">Étudiant en BUT Science des Données – IUT Lumière Lyon 2</p>
+  <a href="CV_Aristide_TCHETCHE.pdf" class="btn" download>Télécharger mon CV</a>
+</header>
 
-  <section>
-    <h2>Expériences professionnelles</h2>
-    <ul>
-      <li><strong>Réceptionniste – Hôtel de la Croix Rousse</strong> (2023 – aujourd’hui)<br/>Accueil client, CRM, gestion de réservations</li>
-      <li><strong>Assistant Chargé d’Études Marketing – Descours & Cabaud</strong> (avril–mai 2025)<br/>Enquêtes, fidélisation, Excel avancé, SPHINX</li>
-      <li><strong>Responsable Marketing e-Commerce – Softcontrol</strong> (2021–2025)<br/>Stratégie digitale, réseaux sociaux, reporting</li>
-      <li><strong>Enquêteur Statistique – Mairie d’Oullins-Pierre Bénite</strong> (déc. 2024)<br/>Analyse des retours citoyens, traitement statistique</li>
-      <li><strong>Ambassadeur Étudiant – Université Lyon 1</strong> (2022–2023)<br/>Communication, représentation institutionnelle</li>
-    </ul>
-  </section>
+<section>
+  <h2>À propos</h2>
+  <p>
+    Étudiant en BUT Science des Données à l'IUT Lumière Lyon 2, je me spécialise dans l’analyse, la visualisation et la valorisation des données. 
+    Fort de plusieurs expériences en entreprise, je combine rigueur statistique, compétences numériques et sens relationnel.
+  </p>
+</section>
 
-  <section>
-    <h2>Formations</h2>
-    <ul>
-      <li><strong>BUT Science des Données – IUT Lumière Lyon 2</strong> (2024–2027)<br/>Collecte, visualisation, automatisation, outils décisionnels</li>
-      <li><strong>Licence Mathématiques et Informatique – Université Lyon 1</strong> (2023–2024)<br/>Python, C, statistiques, algorithmique</li>
-    </ul>
-  </section>
+<section>
+  <h2>Compétences</h2>
+  <ul>
+    <li>Python, R, SQL, Power BI, Excel, HTML</li>
+    <li>SPHINX, Power Query, PowerPivot</li>
+    <li>Communication client, CRM, esprit d'équipe</li>
+    <li>Esprit critique, adaptabilité, rigueur</li>
+  </ul>
+</section>
 
-  <section>
-    <h2>Compétences</h2>
-    <ul>
-      <li>Python, R, SQL, Power BI, Excel</li>
-      <li>CRM, communication client, analyse statistique</li>
-      <li>Automatisation de tableaux de bord, reporting</li>
-      <li>Sphinx, Power Query, PowerPivot</li>
-    </ul>
-  </section>
+<section>
+  <h2>Expériences professionnelles</h2>
+  <ul>
+    <li><strong>Réceptionniste</strong> – Hôtel de la Croix-Rousse (2023–2025)</li>
+    <li><strong>Assistant Études Marketing</strong> – Descours & Cabaud (2025)</li>
+    <li><strong>Responsable Marketing e-Commerce</strong> – Softcontrol (2021–2025)</li>
+    <li><strong>Enquêteur Statistique</strong> – Mairie d’Oullins-Pierre Bénite (2024)</li>
+    <li><strong>Ambassadeur Étudiant</strong> – Université Lyon 1 (2022–2023)</li>
+  </ul>
+</section>
 
-  <section>
-    <h2>Contact</h2>
-    <p>Email : aristide.tchetche@example.com</p>
-    <p>LinkedIn : <a href="https://www.linkedin.com/in/aristide-tchetche-a9456622b" target="_blank">linkedin.com/in/aristide-tchetche</a></p>
-    <p>Localisation : Lyon, France</p>
-  </section>
+<section>
+  <h2>Formation</h2>
+  <ul>
+    <li><strong>BUT Science des Données</strong> – IUT Lumière Lyon 2 (2024–2027)</li>
+    <li><strong>Licence 1 Mathématiques-Informatique</strong> – Université Lyon 1 (2023–2024)</li>
+    <li><strong>Licence Chimie</strong> – Université d’Abomey-Calavi, Bénin (2013–2017)</li>
+  </ul>
+</section>
 
-  <footer>
-    &copy; 2025 Aristide TCHETCHE – Portfolio Personnel
-  </footer>
+<section>
+  <h2>Contact</h2>
+  <p>Email : aristide.tchetche@univ-lyon2.fr</p>
+  <p>Téléphone : 07 53 00 01 96</p>
+  <p>LinkedIn : <a href="https://www.linkedin.com/in/aristide-tchetche-a9456622b" target="_blank">linkedin.com/in/aristide-tchetche</a></p>
+  <p>Localisation : Lyon, France</p>
+</section>
+
+<footer>
+  &copy; 2025 Aristide TCHETCHE — Portfolio personnel
+</footer>
+
 </body>
 </html>
-
-
