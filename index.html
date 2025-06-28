@@ -2,231 +2,157 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aristide TCHETCHE | Portfolio</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
     :root {
-      --main-color: #008CBA;
-      --accent-color: #666;
-      --bg-color: #e2f3f9;
+      --main-color: #800000; /* Couleur bordeaux */
     }
-    html { scroll-behavior: smooth; }
     body {
       font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg-color);
-      color: var(--accent-color);
+      background-color: #f9f9f9;
+      color: #333;
+      padding-top: 60px;
     }
-    header {
-      background-color: var(--main-color);
-      color: white;
+    .navbar {
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .navbar-brand, .nav-link {
+      color: var(--main-color) !important;
+    }
+    .hero {
+      background-color: #e8edf3;
+      padding: 60px 20px;
       text-align: center;
-      padding: 40px 20px;
     }
-    header img {
+    .hero img {
+      width: 150px;
+      height: 150px;
       border-radius: 50%;
-      width: 140px;
-      height: 140px;
-      object-fit: cover;
-      margin-top: 20px;
       border: 4px solid white;
+      margin-bottom: 20px;
     }
-    nav {
-      background: white;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 10px 0;
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+    .hero h3 {
+      color: var(--main-color);
+      font-weight: 600;
+    }
+    .hero p {
+      max-width: 600px;
+      margin: 0 auto 20px;
+    }
+    .btn-main {
+      background-color: var(--main-color);
+      color: white;
+      margin: 5px;
+    }
+    .btn-outline-main {
+      border: 2px solid var(--main-color);
+      color: var(--main-color);
+      margin: 5px;
+    }
+    .btn-outline-main:hover {
+      background-color: var(--main-color);
+      color: white;
+    }
+    .section-title {
+      margin-top: 60px;
+      margin-bottom: 30px;
+      font-size: 2rem;
       text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      font-weight: 600;
     }
-    nav a {
-      margin: 0 15px;
-      color: var(--main-color);
-      text-decoration: none;
-      font-weight: bold;
+    .accordion-button:not(.collapsed) {
+      background-color: var(--main-color);
+      color: white;
     }
-    section {
-      max-width: 900px;
-      margin: 30px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.6s ease-in-out;
-    }
-    section.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    h2 {
-      color: var(--main-color);
-      border-bottom: 2px solid #ddd;
-      padding-bottom: 5px;
-      margin-bottom: 15px;
-    }
-    ul { padding-left: 20px; }
     footer {
-      text-align: center;
+      background-color: #efefef;
       padding: 20px;
-      background-color: #eee;
-      margin-top: 40px;
-    }
-    a.btn {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: var(--main-color);
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-    a.btn:hover { background-color: #006f95; }
-    form input, form textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    form button {
-      background-color: var(--main-color);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    form button:hover { background-color: #006f95; }
-    .back-to-top {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: var(--main-color);
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 50%;
-      font-size: 18px;
-      cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      display: none;
-    }
-    .socials a {
-      margin: 0 10px;
-      color: white;
-      font-size: 1.5em;
-    }
-    @media (max-width: 600px) {
-      nav a { display: block; margin: 10px 0; }
-      header img { width: 100px; height: 100px; }
+      text-align: center;
+      margin-top: 60px;
     }
   </style>
 </head>
 <body>
-<header>
-  <img src="photo_profil.png" alt="Portrait d'Aristide TCHETCHE" title="Aristide TCHETCHE">
-  <h1>Aristide TCHETCHE</h1>
-  <p class="lead">Étudiant en BUT Science des Données – IUT Lumière Lyon 2</p>
-  <a href="CV_Aristide_TCHETCHE.pdf" class="btn" download>Télécharger mon CV</a>
-  <div class="socials">
-    <a href="https://github.com/Tcharis" target="_blank"><i class="fab fa-github"></i></a>
-    <a href="https://linkedin.com/in/aristide-tchetche-a9456622b" target="_blank"><i class="fab fa-linkedin"></i></a>
-  </div>
-</header>
 
-<nav>
-  <a href="#about">À propos</a>
-  <a href="#skills">Compétences</a>
-  <a href="#projects">Projets</a>
-  <a href="#experience">Expérience</a>
-  <a href="#education">Formation</a>
-  <a href="#contact">Contact</a>
+<nav class="navbar fixed-top navbar-expand-lg navbar-light">
+  <div class="container">
+    <a class="navbar-brand" href="#">AT</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#about">À propos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#experience">Expérience</a></li>
+        <li class="nav-item"><a class="nav-link" href="#education">Formation</a></li>
+        <li class="nav-item"><a class="nav-link" href="#projects">Projets</a></li>
+      </ul>
+    </div>
+  </div>
 </nav>
 
-<section id="about">
-  <h2>À propos</h2>
-  <p>Étudiant en BUT Science des Données à l'IUT Lumière Lyon 2, je me spécialise dans l’analyse, la visualisation et la valorisation des données. Fort de plusieurs expériences en entreprise, je combine rigueur statistique, compétences numériques et sens relationnel.</p>
+<section class="hero">
+  <img src="photo_profil.png" alt="Portrait d'Aristide">
+  <h1>Aristide TCHETCHE</h1>
+  <h3><i class="fas fa-chart-line"></i> Data Scientist en formation</h3>
+  <p>Étudiant en BUT Science des Données à l’IUT Lumière Lyon 2, passionné par l’analyse, la statistique, la valorisation des données et le numérique au service de l’humain.</p>
+  <a href="#contact" class="btn btn-main"><i class="fas fa-paper-plane"></i> Me contacter</a>
+  <a href="#projects" class="btn btn-outline-main"><i class="fas fa-folder-open"></i> Voir mes projets</a>
+  <a href="CV_Aristide_TCHETCHE.pdf" class="btn btn-main" download><i class="fas fa-file-pdf"></i> CV</a>
 </section>
 
-<section id="skills">
-  <h2>Compétences</h2>
-  <ul>
-    <li>Python, R, SQL, Power BI, Excel, HTML</li>
-    <li>SPHINX, Power Query, PowerPivot</li>
-    <li>Communication client, CRM, esprit d'équipe</li>
-    <li>Esprit critique, adaptabilité, rigueur</li>
-  </ul>
+<section id="about" class="container">
+  <h2 class="section-title">À propos de moi</h2>
+  <div class="row">
+    <div class="col-md-6">
+      <ul>
+        <li><i class="fas fa-birthday-cake"></i> 28 ans</li>
+        <li><i class="fas fa-home"></i> Réside à Lyon</li>
+        <li><i class="fas fa-graduation-cap"></i> Étudiant en BUT Science des Données</li>
+        <li><i class="fas fa-briefcase"></i> Plusieurs expériences professionnelles</li>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      <h5><i class="fas fa-question-circle"></i> Qui suis-je ?</h5>
+      <p>Curieux, rigoureux et engagé, j'ai acquis des compétences concrètes en statistique, programmation et analyse de données. Je vise à utiliser les données pour améliorer l'expérience utilisateur, soutenir la décision, ou contribuer à des projets à impact.</p>
+    </div>
+  </div>
 </section>
 
-<section id="projects">
-  <h2>Projets</h2>
-  <ul>
-    <li><strong>Étude statistique municipale</strong> – Enquête pour la mairie d’Oullins (2024)</li>
-    <li><strong>Dashboard Power BI</strong> – Visualisation RH (projet SAE)</li>
-    <li><strong>Site personnel</strong> – Ce portfolio déployé sur GitHub Pages</li>
-  </ul>
-</section>
-
-<section id="experience">
-  <h2>Expériences</h2>
-  <ul>
-    <li><strong>Réceptionniste</strong> – Hôtel de la Croix-Rousse (2023–2025)</li>
-    <li><strong>Assistant Études Marketing</strong> – Descours & Cabaud (2025)</li>
-    <li><strong>Responsable Marketing e-Commerce</strong> – Softcontrol (2021–2025)</li>
-    <li><strong>Ambassadeur Étudiant</strong> – Université Lyon 1 (2022–2023)</li>
-  </ul>
-</section>
-
-<section id="education">
-  <h2>Formation</h2>
-  <ul>
-    <li><strong>BUT Science des Données</strong> – IUT Lumière Lyon 2 (2024–2027)</li>
-    <li><strong>Licence 1 Mathématiques-Informatique</strong> – Université Lyon 1 (2023–2024)</li>
-    <li><strong>Licence Chimie</strong> – Université d’Abomey-Calavi (2013–2017)</li>
-  </ul>
-</section>
-
-<section id="contact">
-  <h2>Contact</h2>
-  <form action="https://formspree.io/f/yourformid" method="POST">
-    <input type="text" name="name" placeholder="Votre nom" required>
-    <input type="email" name="email" placeholder="Votre e-mail" required>
-    <textarea name="message" rows="5" placeholder="Votre message" required></textarea>
-    <button type="submit">Envoyer</button>
-  </form>
+<section id="experience" class="container">
+  <h2 class="section-title">Expériences professionnelles</h2>
+  <div class="accordion" id="accordionExperience">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#exp1">
+          Assistant Chargé d’Études Marketing – Descours & Cabaud (2025)
+        </button>
+      </h2>
+      <div id="exp1" class="accordion-collapse collapse" data-bs-parent="#accordionExperience">
+        <div class="accordion-body">
+          <ul>
+            <li>Conception et diffusion de questionnaires via SPHINX</li>
+            <li>Étude du cycle de vie client pour optimiser la fidélisation</li>
+            <li>Automatisation des fiches métiers Excel</li>
+            <li>Gestion opérationnelle des programmes de fidélité</li>
+            <li><strong>Outils :</strong> Sphinx, Excel, Power Query, PowerPivot, VBA</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Ajouter ici d'autres expériences selon la même structure -->
+  </div>
 </section>
 
 <footer>
-  &copy; 2025 Aristide TCHETCHE — Portfolio personnel
+  &copy; 2025 Aristide TCHETCHE
 </footer>
 
-<button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-  <i class="fas fa-arrow-up"></i>
-</button>
-
-<script>
-  const sections = document.querySelectorAll('section');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('show');
-      }
-    });
-  }, {
-    threshold: 0.1
-  });
-  sections.forEach(section => observer.observe(section));
-
-  window.addEventListener(\"scroll\", () => {
-    const btn = document.querySelector(\".back-to-top\");
-    btn.style.display = window.scrollY > 300 ? \"block\" : \"none\";
-  });
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
