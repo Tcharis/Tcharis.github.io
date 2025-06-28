@@ -7,9 +7,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     :root {
-      --main-color: #004080;
-      --text-color: #333;
-      --bg-color: #f9f9f9;
+      --main-color: #008CBA;
+      --accent-color: #666;
+      --bg-color: #ffffff;
     }
     html {
       scroll-behavior: smooth;
@@ -19,13 +19,14 @@
       margin: 0;
       padding: 0;
       background-color: var(--bg-color);
-      color: var(--text-color);
+      color: var(--accent-color);
     }
     header {
       background-color: var(--main-color);
       color: white;
       text-align: center;
       padding: 40px 20px;
+      position: relative;
     }
     header img {
       border-radius: 50%;
@@ -37,6 +38,9 @@
     }
     nav {
       background: white;
+      position: sticky;
+      top: 0;
+      z-index: 100;
       padding: 10px 0;
       text-align: center;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
@@ -88,7 +92,7 @@
       transition: background 0.3s;
     }
     a.btn:hover {
-      background-color: #002f5e;
+      background-color: #006f95;
     }
     form input, form textarea {
       width: 100%;
@@ -106,7 +110,26 @@
       cursor: pointer;
     }
     form button:hover {
-      background-color: #002f5e;
+      background-color: #006f95;
+    }
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--main-color);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: none;
+    }
+    .socials a {
+      margin: 0 10px;
+      color: white;
+      font-size: 1.5em;
     }
   </style>
 </head>
@@ -117,6 +140,10 @@
   <h1>Aristide TCHETCHE</h1>
   <p class="lead">Étudiant en BUT Science des Données – IUT Lumière Lyon 2</p>
   <a href="CV_Aristide_TCHETCHE.pdf" class="btn" download>Télécharger mon CV</a>
+  <div class="socials">
+    <a href="https://github.com/Tcharis" target="_blank"><i class="fab fa-github"></i></a>
+    <a href="https://linkedin.com/in/aristide-tchetche-a9456622b" target="_blank"><i class="fab fa-linkedin"></i></a>
+  </div>
 </header>
 
 <nav>
@@ -146,9 +173,9 @@
 <section id="projects">
   <h2>Projets</h2>
   <ul>
-    <li><strong>Étude statistique municipale</strong> – Enquête menée pour la mairie d’Oullins (2024)</li>
-    <li><strong>Dashboard Power BI</strong> – Visualisation de données RH pour une entreprise fictive (projet SAE)</li>
-    <li><strong>Site personnel</strong> – Ce portfolio développé avec HTML/CSS et GitHub Pages</li>
+    <li><strong>Étude statistique municipale</strong> – Enquête pour la mairie d’Oullins (2024)</li>
+    <li><strong>Dashboard Power BI</strong> – Visualisation RH (projet SAE)</li>
+    <li><strong>Site personnel</strong> – Ce portfolio déployé sur GitHub Pages</li>
   </ul>
 </section>
 
@@ -167,7 +194,7 @@
   <ul>
     <li><strong>BUT Science des Données</strong> – IUT Lumière Lyon 2 (2024–2027)</li>
     <li><strong>Licence 1 Mathématiques-Informatique</strong> – Université Lyon 1 (2023–2024)</li>
-    <li><strong>Licence Chimie</strong> – Université d’Abomey-Calavi, Bénin (2013–2017)</li>
+    <li><strong>Licence Chimie</strong> – Université d’Abomey-Calavi (2013–2017)</li>
   </ul>
 </section>
 
@@ -185,6 +212,10 @@
   &copy; 2025 Aristide TCHETCHE — Portfolio personnel
 </footer>
 
+<button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
 <script>
   const sections = document.querySelectorAll('section');
   const observer = new IntersectionObserver(entries => {
@@ -196,9 +227,11 @@
   }, {
     threshold: 0.1
   });
+  sections.forEach(section => observer.observe(section));
 
-  sections.forEach(section => {
-    observer.observe(section);
+  window.addEventListener("scroll", () => {
+    const btn = document.querySelector(".back-to-top");
+    btn.style.display = window.scrollY > 300 ? "block" : "none";
   });
 </script>
 
