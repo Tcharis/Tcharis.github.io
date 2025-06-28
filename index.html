@@ -4,11 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Aristide TCHETCHE | Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     :root {
       --main-color: #004080;
       --text-color: #333;
       --bg-color: #f9f9f9;
+    }
+    html {
+      scroll-behavior: smooth;
     }
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -31,13 +35,17 @@
       margin-top: 20px;
       border: 5px solid white;
     }
-    h1 {
-      margin: 20px 0 10px;
-      font-size: 2.5em;
+    nav {
+      background: white;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-    p.lead {
-      font-size: 1.2em;
-      font-style: italic;
+    nav a {
+      margin: 0 15px;
+      color: var(--main-color);
+      text-decoration: none;
+      font-weight: bold;
     }
     section {
       max-width: 900px;
@@ -46,6 +54,13 @@
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease-in-out;
+    }
+    section.show {
+      opacity: 1;
+      transform: translateY(0);
     }
     h2 {
       color: var(--main-color);
@@ -75,14 +90,23 @@
     a.btn:hover {
       background-color: #002f5e;
     }
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 1.8em;
-      }
-      section {
-        margin: 15px;
-        padding: 20px;
-      }
+    form input, form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    form button {
+      background-color: var(--main-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    form button:hover {
+      background-color: #002f5e;
     }
   </style>
 </head>
@@ -95,15 +119,21 @@
   <a href="CV_Aristide_TCHETCHE.pdf" class="btn" download>Télécharger mon CV</a>
 </header>
 
-<section>
+<nav>
+  <a href="#about">À propos</a>
+  <a href="#skills">Compétences</a>
+  <a href="#projects">Projets</a>
+  <a href="#experience">Expérience</a>
+  <a href="#education">Formation</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<section id="about">
   <h2>À propos</h2>
-  <p>
-    Étudiant en BUT Science des Données à l'IUT Lumière Lyon 2, je me spécialise dans l’analyse, la visualisation et la valorisation des données. 
-    Fort de plusieurs expériences en entreprise, je combine rigueur statistique, compétences numériques et sens relationnel.
-  </p>
+  <p>Étudiant en BUT Science des Données à l'IUT Lumière Lyon 2, je me spécialise dans l’analyse, la visualisation et la valorisation des données. Fort de plusieurs expériences en entreprise, je combine rigueur statistique, compétences numériques et sens relationnel.</p>
 </section>
 
-<section>
+<section id="skills">
   <h2>Compétences</h2>
   <ul>
     <li>Python, R, SQL, Power BI, Excel, HTML</li>
@@ -113,18 +143,26 @@
   </ul>
 </section>
 
-<section>
-  <h2>Expériences professionnelles</h2>
+<section id="projects">
+  <h2>Projets</h2>
+  <ul>
+    <li><strong>Étude statistique municipale</strong> – Enquête menée pour la mairie d’Oullins (2024)</li>
+    <li><strong>Dashboard Power BI</strong> – Visualisation de données RH pour une entreprise fictive (projet SAE)</li>
+    <li><strong>Site personnel</strong> – Ce portfolio développé avec HTML/CSS et GitHub Pages</li>
+  </ul>
+</section>
+
+<section id="experience">
+  <h2>Expériences</h2>
   <ul>
     <li><strong>Réceptionniste</strong> – Hôtel de la Croix-Rousse (2023–2025)</li>
     <li><strong>Assistant Études Marketing</strong> – Descours & Cabaud (2025)</li>
     <li><strong>Responsable Marketing e-Commerce</strong> – Softcontrol (2021–2025)</li>
-    <li><strong>Enquêteur Statistique</strong> – Mairie d’Oullins-Pierre Bénite (2024)</li>
     <li><strong>Ambassadeur Étudiant</strong> – Université Lyon 1 (2022–2023)</li>
   </ul>
 </section>
 
-<section>
+<section id="education">
   <h2>Formation</h2>
   <ul>
     <li><strong>BUT Science des Données</strong> – IUT Lumière Lyon 2 (2024–2027)</li>
@@ -133,17 +171,36 @@
   </ul>
 </section>
 
-<section>
+<section id="contact">
   <h2>Contact</h2>
-  <p>Email : aristide.tchetche@univ-lyon2.fr</p>
-  <p>Téléphone : 07 53 00 01 96</p>
-  <p>LinkedIn : <a href="https://www.linkedin.com/in/aristide-tchetche-a9456622b" target="_blank">linkedin.com/in/aristide-tchetche</a></p>
-  <p>Localisation : Lyon, France</p>
+  <form action="https://formspree.io/f/yourformid" method="POST">
+    <input type="text" name="name" placeholder="Votre nom" required>
+    <input type="email" name="email" placeholder="Votre e-mail" required>
+    <textarea name="message" rows="5" placeholder="Votre message" required></textarea>
+    <button type="submit">Envoyer</button>
+  </form>
 </section>
 
 <footer>
   &copy; 2025 Aristide TCHETCHE — Portfolio personnel
 </footer>
+
+<script>
+  const sections = document.querySelectorAll('section');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('show');
+      }
+    });
+  }, {
+    threshold: 0.1
+  });
+
+  sections.forEach(section => {
+    observer.observe(section);
+  });
+</script>
 
 </body>
 </html>
