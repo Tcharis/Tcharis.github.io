@@ -3,391 +3,1041 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aristide TCHETCHE | Portfolio</title>
+  <title>Aristide TCHETCHE | Data Analyst</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --main-color: #007e8a;
+      --primary: #007e8a;
+      --primary-dark: #005f69;
+      --primary-light: #e0f4f6;
+      --accent: #ff6b35;
+      --dark: #1a1a2e;
+      --dark2: #16213e;
+      --gray: #6b7280;
+      --light: #f8fafc;
+      --white: #ffffff;
+      --card-bg: #ffffff;
+      --shadow: 0 4px 24px rgba(0,126,138,0.10);
+      --shadow-lg: 0 12px 40px rgba(0,126,138,0.18);
+      --radius: 16px;
+      --transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f6f8;
-      color: #333;
-      padding-top: 60px;
-      line-height: 1.6;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light);
+      color: #1f2937;
+      line-height: 1.7;
     }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--light); }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+    /* ── NAVBAR ── */
     .navbar {
-      background-color: #fff;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      position: fixed; top: 0; width: 100%; z-index: 999;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,126,138,0.10);
+      padding: 14px 0;
+      transition: var(--transition);
     }
-    .navbar-brand, .nav-link {
-      color: var(--main-color) !important;
-      font-weight: 600;
+    .navbar.scrolled {
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
     }
+    .nav-container {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+    }
+    .nav-brand {
+      font-weight: 800; font-size: 1.3rem;
+      color: var(--primary); text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+    .nav-links { display: flex; gap: 4px; list-style: none; }
+    .nav-links a {
+      color: #374151; text-decoration: none;
+      padding: 8px 14px; border-radius: 8px;
+      font-weight: 500; font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .nav-links a:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .nav-toggle {
+      display: none; background: none; border: none;
+      font-size: 1.4rem; color: var(--primary); cursor: pointer;
+    }
+
+    /* ── HERO ── */
     .hero {
-      background: linear-gradient(135deg, #f9f9f9, #e3e3e3);
-      padding: 80px 20px;
-      text-align: center;
-      border-bottom: 2px solid #ddd;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 50%, #0f3460 100%);
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+      padding: 100px 24px 60px;
     }
-    .hero img {
-      width: 160px;
-      height: 160px;
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(0,126,138,0.25) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(255,107,53,0.12) 0%, transparent 50%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; opacity: 0.04;
+      background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+    .hero-inner {
+      max-width: 1100px; margin: 0 auto; width: 100%;
+      display: flex; align-items: center; gap: 60px;
+      position: relative; z-index: 2;
+    }
+    .hero-img-wrap {
+      flex-shrink: 0; position: relative;
+    }
+    .hero-img-wrap img {
+      width: 200px; height: 200px;
       border-radius: 50%;
-      border: 5px solid white;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 25px;
+      border: 4px solid rgba(255,255,255,0.2);
+      box-shadow: 0 0 0 8px rgba(0,126,138,0.2), 0 20px 60px rgba(0,0,0,0.4);
+      object-fit: cover;
     }
+    .hero-img-wrap .status-dot {
+      position: absolute; bottom: 12px; right: 12px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #22c55e;
+      border: 3px solid var(--dark2);
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
+      50% { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+    }
+    .hero-text { flex: 1; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,126,138,0.2);
+      border: 1px solid rgba(0,126,138,0.4);
+      color: #5eead4;
+      padding: 6px 16px; border-radius: 100px;
+      font-size: 0.8rem; font-weight: 600;
+      letter-spacing: 0.5px; margin-bottom: 18px;
+    }
+    .hero-badge i { font-size: 0.75rem; }
     .hero h1 {
-      font-size: 3rem;
-      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      color: white; line-height: 1.1;
+      margin-bottom: 10px;
     }
-    .hero h3 {
-      color: var(--main-color);
-      font-weight: 600;
+    .hero h1 span { color: #5eead4; }
+    .hero-subtitle {
+      font-size: 1.1rem; font-weight: 500;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 20px;
     }
-    .hero p {
-      max-width: 700px;
-      margin: 0 auto 25px;
+    .hero-desc {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.95rem; max-width: 520px;
+      margin-bottom: 32px;
     }
-    .btn-main {
-      background-color: var(--main-color);
+    .hero-tags {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px;
+    }
+    .hero-tag {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.75);
+      padding: 4px 12px; border-radius: 100px;
+      font-size: 0.8rem; font-weight: 500;
+    }
+    .hero-btns { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn-hero-primary {
+      background: var(--primary);
+      color: white; text-decoration: none;
+      padding: 12px 28px; border-radius: 10px;
+      font-weight: 600; font-size: 0.9rem;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: var(--transition);
+      box-shadow: 0 4px 20px rgba(0,126,138,0.4);
+    }
+    .btn-hero-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,126,138,0.5);
+    }
+    .btn-hero-outline {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white; text-decoration: none;
+      padding: 12px 28px; border-radius: 10px;
+      font-weight: 600; font-size: 0.9rem;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: var(--transition);
+    }
+    .btn-hero-outline:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateY(-2px);
+    }
+    .hero-scroll {
+      position: absolute; bottom: 30px; left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.4); font-size: 0.8rem;
+      text-align: center; z-index: 2;
+      animation: bounce 2s infinite;
+    }
+    .hero-scroll i { display: block; font-size: 1.2rem; }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      max-width: 1100px; margin: 0 auto;
+      padding: 90px 24px;
+    }
+    .section-header {
+      text-align: center; margin-bottom: 56px;
+    }
+    .section-eyebrow {
+      display: inline-block;
+      color: var(--primary); font-weight: 600;
+      font-size: 0.85rem; letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 12px;
+    }
+    .section-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      color: var(--dark); line-height: 1.2;
+    }
+    .section-divider {
+      width: 50px; height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px; margin: 16px auto 0;
+    }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .about-card {
+      background: white; border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0,126,138,0.08);
+      transition: var(--transition);
+    }
+    .about-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+    .about-card h4 {
+      font-size: 1rem; font-weight: 700;
+      color: var(--primary); margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .info-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.9rem; color: #4b5563;
+    }
+    .info-item:last-child { border-bottom: none; }
+    .info-item i { width: 20px; color: var(--primary); text-align: center; }
+    .skills-grid {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .skill-chip {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 5px 12px; border-radius: 100px;
+      font-size: 0.82rem; font-weight: 600;
+      transition: var(--transition);
+    }
+    .skill-chip:hover {
+      background: var(--primary);
+      color: white; transform: translateY(-2px);
+    }
+
+    /* ── EXPERIENCE ── */
+    .exp-timeline { position: relative; }
+    .exp-timeline::before {
+      content: ''; position: absolute;
+      left: 28px; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(180deg, var(--primary), transparent);
+    }
+    .exp-item {
+      display: flex; gap: 28px;
+      margin-bottom: 32px; position: relative;
+    }
+    .exp-dot {
+      flex-shrink: 0; width: 58px; height: 58px;
+      background: white; border: 2px solid var(--primary);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; color: var(--primary);
+      box-shadow: var(--shadow);
+      z-index: 1; position: relative;
+      transition: var(--transition);
+    }
+    .exp-dot.featured {
+      background: var(--primary); color: white;
+      border-color: var(--primary-dark);
+      box-shadow: 0 4px 20px rgba(0,126,138,0.4);
+    }
+    .exp-card {
+      flex: 1; background: white;
+      border-radius: var(--radius); padding: 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0,126,138,0.08);
+      transition: var(--transition);
+    }
+    .exp-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-3px);
+    }
+    .exp-card.featured {
+      border: 2px solid var(--primary);
+      background: linear-gradient(135deg, #f0fafb, white);
+    }
+    .exp-header {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 12px;
+    }
+    .exp-header h4 {
+      font-size: 1.05rem; font-weight: 700; color: #1f2937;
+    }
+    .exp-date {
+      background: var(--primary-light); color: var(--primary-dark);
+      padding: 4px 12px; border-radius: 100px;
+      font-size: 0.78rem; font-weight: 600; white-space: nowrap;
+    }
+    .exp-company {
+      font-size: 0.88rem; font-weight: 600;
+      color: var(--primary); margin-bottom: 12px;
+    }
+    .exp-company i { margin-right: 6px; }
+    .exp-desc {
+      font-size: 0.88rem; color: #6b7280;
+      margin-bottom: 14px; line-height: 1.6;
+    }
+    .exp-bullets {
+      list-style: none; margin-bottom: 16px;
+    }
+    .exp-bullets li {
+      font-size: 0.88rem; color: #374151;
+      padding: 4px 0 4px 18px;
+      position: relative;
+    }
+    .exp-bullets li::before {
+      content: '▸'; position: absolute; left: 0;
+      color: var(--primary); font-size: 0.8rem;
+    }
+    .exp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .exp-tag {
+      background: #f1f5f9; color: #475569;
+      padding: 3px 10px; border-radius: 6px;
+      font-size: 0.78rem; font-weight: 500;
+    }
+    .featured-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(90deg, var(--primary), #00a8b8);
+      color: white; padding: 3px 12px; border-radius: 100px;
+      font-size: 0.75rem; font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    /* ── EDUCATION ── */
+    .edu-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .edu-card {
+      background: white; border-radius: var(--radius);
+      padding: 28px; box-shadow: var(--shadow);
+      border: 1px solid rgba(0,126,138,0.08);
+      transition: var(--transition);
+      position: relative; overflow: hidden;
+    }
+    .edu-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .edu-card:hover {
+      box-shadow: var(--shadow-lg); transform: translateY(-4px);
+    }
+    .edu-year {
+      display: inline-block;
+      background: var(--primary-light); color: var(--primary-dark);
+      padding: 3px 12px; border-radius: 100px;
+      font-size: 0.78rem; font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .edu-card h4 {
+      font-size: 1rem; font-weight: 700;
+      color: #1f2937; margin-bottom: 6px;
+    }
+    .edu-card .degree {
+      font-size: 0.88rem; color: var(--primary);
+      font-weight: 600; margin-bottom: 10px;
+    }
+    .edu-card .rank {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fef9c3; color: #854d0e;
+      padding: 3px 10px; border-radius: 6px;
+      font-size: 0.78rem; font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .edu-card p { font-size: 0.85rem; color: #6b7280; }
+
+    /* ── PROJECTS ── */
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .project-card {
+      background: white; border-radius: var(--radius);
+      padding: 28px; box-shadow: var(--shadow);
+      border: 1px solid rgba(0,126,138,0.08);
+      transition: var(--transition);
+      display: flex; flex-direction: column;
+    }
+    .project-card:hover {
+      box-shadow: var(--shadow-lg); transform: translateY(-4px);
+    }
+    .project-icon {
+      width: 48px; height: 48px;
+      background: var(--primary-light);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; color: var(--primary);
+      margin-bottom: 18px;
+    }
+    .project-card h4 {
+      font-size: 0.98rem; font-weight: 700;
+      color: #1f2937; margin-bottom: 10px;
+    }
+    .project-card p {
+      font-size: 0.85rem; color: #6b7280;
+      flex: 1; margin-bottom: 16px;
+    }
+    .project-year {
+      font-size: 0.75rem; font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* ── STATS ── */
+    .stats-bar {
+      background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 100%);
+      padding: 60px 24px;
+    }
+    .stats-inner {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem; font-weight: 700;
+      color: #5eead4; display: block;
+    }
+    .stat-label {
+      font-size: 0.82rem; color: rgba(255,255,255,0.6);
+      font-weight: 500; margin-top: 4px; display: block;
+    }
+
+    /* ── CONTACT ── */
+    #contact { padding-bottom: 90px; }
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1.5fr; gap: 32px;
+    }
+    .contact-info {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: var(--radius); padding: 36px;
       color: white;
-      margin: 5px;
-      transition: all 0.3s ease;
     }
-    .btn-main:hover {
-      background-color: #00646e;
+    .contact-info h3 {
+      font-size: 1.4rem; font-weight: 700; margin-bottom: 10px;
     }
-    .btn-outline-main {
-      border: 2px solid var(--main-color);
-      color: var(--main-color);
-      margin: 5px;
-      transition: all 0.3s ease;
+    .contact-info p {
+      font-size: 0.88rem; opacity: 0.8; margin-bottom: 28px;
     }
-    .btn-outline-main:hover {
-      background-color: var(--main-color);
-      color: white;
+    .contact-detail {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 20px;
     }
-    .section-title {
-      margin-top: 60px;
-      margin-bottom: 30px;
-      font-size: 2.2rem;
-      text-align: center;
-      font-weight: 700;
-    }
-    .accordion-button:not(.collapsed) {
-      background-color: var(--main-color);
-      color: white;
-    }
-    #contact form {
-      background: white;
-      padding: 30px;
+    .contact-detail .icon {
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.15);
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-      margin-bottom: 60px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
-    #contact .form-control {
-      border-radius: 0.5rem;
-      padding: 0.75rem;
-      box-shadow: none;
+    .contact-detail span {
+      font-size: 0.88rem; opacity: 0.9;
     }
+    .social-links { display: flex; gap: 12px; margin-top: 28px; }
+    .social-link {
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; text-decoration: none; font-size: 1rem;
+      transition: var(--transition);
+    }
+    .social-link:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-3px);
+    }
+    .contact-form {
+      background: white; border-radius: var(--radius);
+      padding: 36px; box-shadow: var(--shadow);
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group label {
+      display: block; font-size: 0.85rem;
+      font-weight: 600; color: #374151; margin-bottom: 6px;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%; padding: 12px 16px;
+      border: 2px solid #e5e7eb; border-radius: 10px;
+      font-family: 'Inter', sans-serif; font-size: 0.9rem;
+      color: #1f2937; transition: var(--transition);
+      outline: none; resize: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0,126,138,0.12);
+    }
+    .btn-submit {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white; border: none; padding: 14px 32px;
+      border-radius: 10px; font-family: 'Inter', sans-serif;
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+      transition: var(--transition); width: 100%;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,126,138,0.35);
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,126,138,0.45);
+    }
+
+    /* ── FOOTER ── */
     footer {
-      background-color: #efefef;
-      padding: 20px;
-      text-align: center;
-      font-weight: 500;
-      font-size: 0.9rem;
+      background: var(--dark);
+      padding: 30px 24px; text-align: center;
+      color: rgba(255,255,255,0.4); font-size: 0.85rem;
     }
-    .experience-card {
-  background-color: #007e8a;
-  color: white;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-.experience-card h5 {
-  font-size: 1.25rem;
-  font-weight: bold;
-}
+    footer span { color: var(--primary); }
+
+    /* ── FADE IN ANIMATION ── */
+    .fade-up {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; position: absolute;
+        top: 70px; left: 0; right: 0; background: white;
+        padding: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: block; }
+      .hero-inner { flex-direction: column; text-align: center; gap: 30px; }
+      .hero-img-wrap img { width: 150px; height: 150px; }
+      .hero-tags { justify-content: center; }
+      .hero-btns { justify-content: center; }
+      .about-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .exp-timeline::before { left: 24px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
-<nav class="navbar fixed-top navbar-expand-lg navbar-light">
-  <div class="container">
-    <a class="navbar-brand" href="#">AT</a>
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="#about"><i class="fas fa-user"></i> À propos</a></li>
-        <li class="nav-item"><a class="nav-link" href="#experience"><i class="fas fa-briefcase"></i> Expérience</a></li>
-        <li class="nav-item"><a class="nav-link" href="#education"><i class="fas fa-graduation-cap"></i> Formation</a></li>
-        <li class="nav-item"><a class="nav-link" href="#projects"><i class="fas fa-project-diagram"></i> Projets</a></li>
-        <li class="nav-item"><a class="nav-link" href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
-      </ul>
-    </div>
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a class="nav-brand" href="#">AT</a>
+    <button class="nav-toggle" id="navToggle"><i class="fas fa-bars"></i></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about"><i class="fas fa-user me-1"></i> À propos</a></li>
+      <li><a href="#experience"><i class="fas fa-briefcase me-1"></i> Expérience</a></li>
+      <li><a href="#education"><i class="fas fa-graduation-cap me-1"></i> Formation</a></li>
+      <li><a href="#projects"><i class="fas fa-code me-1"></i> Projets</a></li>
+      <li><a href="#contact"><i class="fas fa-envelope me-1"></i> Contact</a></li>
+    </ul>
   </div>
 </nav>
 
-<section class="hero bg-light py-5">
-  <div class="container d-flex flex-column flex-md-row align-items-center justify-content-center text-start gap-4">
-    <img src="photo_profil.png" alt="Portrait d'Aristide" class="rounded-circle border border-3 border-white shadow" width="180" height="180">
-    <div>
-      <h1 class="fw-bold">Aristide TCHETCHE</h1>
-      <h3 style="color: var(--main-color);"><i class="fas fa-chart-line"></i> Data Scientist en formation</h3>
-      <p>Étudiant en BUT Science des Données à l’IUT Lumière Lyon 2, passionné par l’analyse, la statistique, la valorisation des données et le numérique au service de l’humain.</p>
-      <div class="mt-3">
-        <a href="#contact" class="btn btn-main me-2"><i class="fas fa-paper-plane"></i> Me contacter</a>
-        <a href="#projects" class="btn btn-outline-main me-2"><i class="fas fa-folder-open"></i> Voir mes projets</a>
-        <a href="TCHETCHE_Aristide_CV.pdf" class="btn btn-main" download><i class="fas fa-file-pdf"></i> CV</a>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-img-wrap">
+      <img src="photo_profil.png" alt="Portrait Aristide TCHETCHE">
+      <span class="status-dot" title="En alternance"></span>
+    </div>
+    <div class="hero-text">
+      <div class="hero-badge">
+        <i class="fas fa-circle" style="color:#22c55e; font-size:0.5rem;"></i>
+        Disponible · En alternance chez Orange
       </div>
+      <h1>Aristide <span>TCHETCHE</span></h1>
+      <p class="hero-subtitle"><i class="fas fa-chart-line" style="margin-right:8px; color:#5eead4;"></i>Alternant Data Analyst · Orange Wholesale France</p>
+      <p class="hero-desc">Étudiant en BUT Science des Données à l'IUT Lumière Lyon 2, passionné par l'analyse de données, la statistique et la visualisation au service de la décision.</p>
+      <div class="hero-tags">
+        <span class="hero-tag">Python</span>
+        <span class="hero-tag">SQL</span>
+        <span class="hero-tag">Power BI</span>
+        <span class="hero-tag">R</span>
+        <span class="hero-tag">Excel</span>
+        <span class="hero-tag">Power Query</span>
+      </div>
+      <div class="hero-btns">
+        <a href="#contact" class="btn-hero-primary"><i class="fas fa-paper-plane"></i> Me contacter</a>
+        <a href="#projects" class="btn-hero-outline"><i class="fas fa-folder-open"></i> Mes projets</a>
+        <a href="TCHETCHE_Aristide_CV.pdf" class="btn-hero-outline" download><i class="fas fa-file-pdf"></i> CV</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <i class="fas fa-chevron-down"></i>
+    Défiler
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item fade-up">
+      <span class="stat-num">7+</span>
+      <span class="stat-label">Expériences professionnelles</span>
+    </div>
+    <div class="stat-item fade-up">
+      <span class="stat-num">3</span>
+      <span class="stat-label">Pays d'activité</span>
+    </div>
+    <div class="stat-item fade-up">
+      <span class="stat-num">4</span>
+      <span class="stat-label">Projets académiques</span>
+    </div>
+    <div class="stat-item fade-up">
+      <span class="stat-num">2027</span>
+      <span class="stat-label">Diplôme BUT prévu</span>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="section-header fade-up">
+    <span class="section-eyebrow">Qui suis-je ?</span>
+    <h2>À propos de moi</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-card fade-up">
+      <h4><i class="fas fa-id-card"></i> Informations</h4>
+      <div class="info-item"><i class="fas fa-map-marker-alt"></i> Lyon, Auvergne-Rhône-Alpes</div>
+      <div class="info-item"><i class="fas fa-graduation-cap"></i> BUT Science des Données – IUT Lumière Lyon 2</div>
+      <div class="info-item"><i class="fas fa-building"></i> Alternant @ Orange Wholesale France</div>
+      <div class="info-item"><i class="fas fa-language"></i> Français, Anglais, Fon</div>
+      <div class="info-item"><i class="fas fa-envelope"></i> tcharisdu229@gmail.com</div>
+    </div>
+    <div class="about-card fade-up">
+      <h4><i class="fas fa-star"></i> Compétences techniques</h4>
+      <div class="skills-grid">
+        <span class="skill-chip">Python</span>
+        <span class="skill-chip">SQL / MySQL</span>
+        <span class="skill-chip">R</span>
+        <span class="skill-chip">Power BI</span>
+        <span class="skill-chip">Power Query</span>
+        <span class="skill-chip">Business Objects</span>
+        <span class="skill-chip">Excel avancé</span>
+        <span class="skill-chip">VBA</span>
+        <span class="skill-chip">SPHINX</span>
+        <span class="skill-chip">Tableau</span>
+        <span class="skill-chip">LookerStudio</span>
+        <span class="skill-chip">HTML / CSS</span>
+        <span class="skill-chip">Statistiques</span>
+        <span class="skill-chip">CRM</span>
+        <span class="skill-chip">Canva</span>
+        <span class="skill-chip">Git</span>
+      </div>
+    </div>
+    <div class="about-card fade-up" style="grid-column: 1 / -1;">
+      <h4><i class="fas fa-user-circle"></i> Qui suis-je ?</h4>
+      <p style="color:#4b5563; font-size:0.93rem;">Curieux, rigoureux et engagé, je combine un parcours scientifique solide (Licence Chimie, Maths/Info) avec une reconversion réussie vers la data. Actuellement en alternance chez <strong>Orange Wholesale France</strong> au sein de l'équipe PC2R, j'interviens sur la création de reportings automatisés, le pilotage d'indicateurs de performance et l'analyse de données financières. Mon expérience internationale (Bénin, France) et ma diversité de profils professionnels font de moi un profil polyvalent, capable d'allier rigueur analytique et sens du contact.</p>
     </div>
   </div>
 </section>
 
-<section id="about" class="container py-5">
-  <h2 class="section-title"><i class="fas fa-id-card"></i> À propos de moi</h2>
-  <div class="row g-4">
-    <div class="col-md-6">
-      <div class="bg-white rounded shadow-sm p-4">
-        <ul class="list-unstyled mb-0">
-          <li class="mb-2"><i class="fas fa-birthday-cake me-2"></i> 29 ans</li>
-          <li class="mb-2"><i class="fas fa-home me-2"></i> Réside à Lyon</li>
-          <li class="mb-2"><i class="fas fa-graduation-cap me-2"></i> Étudiant en BUT Science des Données</li>
-          <li class="mb-2"><i class="fas fa-briefcase me-2"></i> Plusieurs expériences professionnelles</li>
-        </ul>
-      </div>
+<!-- EXPERIENCE -->
+<section style="background: #f1f5f9; padding: 90px 0;">
+  <div class="section" style="padding-top: 0; padding-bottom: 0;" id="experience">
+    <div class="section-header fade-up">
+      <span class="section-eyebrow">Parcours</span>
+      <h2>Expériences professionnelles</h2>
+      <div class="section-divider"></div>
     </div>
-    <div class="col-md-6">
-      <div class="bg-white rounded shadow-sm p-4">
-        <h5><i class="fas fa-question-circle me-2"></i> Qui suis-je ?</h5>
-        <p>Curieux, rigoureux et engagé, j'ai acquis des compétences concrètes en statistique, programmation et analyse de données. Je vise à utiliser les données pour améliorer l'expérience utilisateur, soutenir la décision, ou contribuer à des projets à impact.</p>
-      </div>
-    </div>
-  </div>
-</section>
+    <div class="exp-timeline">
 
-<section id="experience" class="container">
-  <h2 class="section-title"><i class="fas fa-briefcase"></i> Expérience</h2>
-
-  <div class="experience-card">
-    <h5><i class="fas fa-hotel"></i> Réceptionniste – Hôtel de la Croix Rousse</h5>
-    <p class="mb-1">févr. 2023 - aujourd’hui | Lyon, France</p>
-    <ul>
-      <li>Accueil, gestion des réservations, CRM et encaissements</li>
-      <li>Communication interne, fidélisation et résolution proactive</li>
-    </ul>
-    <p><strong>Compétences :</strong> CRM · Réservation d'hôtel · Communication · Encaissements · Adaptabilité</p>
-  </div>
-
-  <div class="experience-card">
-    <h5><i class="fas fa-chart-pie"></i> Assistant Chargé d’Études Marketing – Descours & Cabaud</h5>
-    <p class="mb-1">avr. 2025 - mai 2025 | Lyon, France</p>
-    <ul>
-      <li>Enquêtes via SPHINX, étude du cycle de vie client</li>
-      <li>Automatisation Excel, programmes de fidélité</li>
-    </ul>
-    <p><strong>Compétences :</strong> Sphinx · Excel avancé · Power Query · PowerPivot · VBA</p>
-  </div>
-
-  <div class="experience-card">
-    <h5><i class="fas fa-bullhorn"></i> Responsable Marketing e-Commerce – Softcontrol</h5>
-    <p class="mb-1">août 2021 - avr. 2025 | À distance</p>
-    <p><strong>Compétences :</strong> Marketing digital · Facebook Ads · Tiktok · Canva · Stripe</p>
-  </div>
-
-  <div class="experience-card">
-    <h5><i class="fas fa-poll"></i> Enquêteur Statistique – IUT Lyon 2 / Mairie d’Oullins-Pierre Bénite</h5>
-    <p class="mb-1">déc. 2024 | Oullins, France</p>
-    <ul>
-      <li>Enquête publique sur la fusion des communes</li>
-      <li>Analyse statistique, rédaction et soutenance de rapport</li>
-    </ul>
-    <p><strong>Compétences :</strong> Analyse statistique · Présentation · Conception de questionnaires · Travail d’équipe</p>
-  </div>
-
-  <div class="experience-card">
-    <h5><i class="fas fa-university"></i> Ambassadeur Étudiant – Université Lyon 1</h5>
-    <p class="mb-1">oct. 2022 - juin 2023 | Lyon, France</p>
-    <ul>
-      <li>Promotion de l'université, événements et conseils aux futurs étudiants</li>
-    </ul>
-    <p><strong>Compétences :</strong> Communication · Orientation · Organisation</p>
-  </div>
-
-  <div class="experience-card">
-    <h5><i class="fas fa-school"></i> Surveillant Scolaire – École Charles de Foucauld</h5>
-    <p class="mb-1">oct. 2022 - mai 2023 | Lyon, France</p>
-    <ul>
-      <li>Encadrement, suivi pédagogique, gestion de groupe</li>
-    </ul>
-    <p><strong>Compétences :</strong> Encadrement éducatif · Gestion des conflits · Pédagogie</p>
-  </div>
-
-  <div class="experience-card">
-    <h5><i class="fas fa-atom"></i> Enseignant Physique-Chimie – Collège d’Enseignement Général</h5>
-    <p class="mb-1">sept. 2019 - juil. 2022 | Cotonou, Bénin</p>
-    <ul>
-      <li>Préparation, animation de cours scientifiques, travaux pratiques</li>
-      <li>Suivi pédagogique et relation avec familles</li>
-    </ul>
-    <p><strong>Compétences :</strong> Enseignement · Communication · Gestion de classe · Évaluation</p>
-  </div>
-</section>
-
-<section id="education" class="container py-5">
-  <h2 class="section-title"><i class="fas fa-graduation-cap"></i> Formation</h2>
-  <div class="timeline position-relative">
-    <div class="border-start border-4 position-absolute top-0 bottom-0 start-50 translate-middle-x" style="border-color: var(--main-color);"></div>
-
-    <div class="row mb-5">
-      <div class="col-md-6">
-        <div class="card shadow-sm p-4 rounded-4">
-          <h5 style="color: var(--main-color);" class="fw-bold"><i class="fas fa-university"></i> IUT Lumière Lyon 2</h5>
-          <p>BUT Science des données – sept. 2024 à déc. 2027</p>
-          <ul>
-            <li>Collecte, analyse et visualisation de données</li>
-            <li>Création d'outils décisionnels et bases de données</li>
-            <li>Automatisation de tableaux de bord et analyse statistique</li>
+      <!-- ORANGE WHOLESALE -->
+      <div class="exp-item fade-up">
+        <div class="exp-dot featured"><i class="fas fa-database"></i></div>
+        <div class="exp-card featured">
+          <div class="featured-badge"><i class="fas fa-star"></i> Poste actuel</div>
+          <div class="exp-header">
+            <h4>Alternant Data Analyst Finance Partner</h4>
+            <span class="exp-date">sept. 2025 – août 2027</span>
+          </div>
+          <div class="exp-company"><i class="fas fa-building"></i> Orange Wholesale France · Lyon</div>
+          <p class="exp-desc">Au sein du Parcours Facturation Recouvrement Certification (PC2R), équipe de 9 personnes rattachée à la Direction du Service aux Opérateurs (DSO). Orange Wholesale représente le 3e pilier stratégique d'Orange (+7 Mds€ de CA).</p>
+          <ul class="exp-bullets">
+            <li>Création et automatisation de reportings pour le pilotage de l'activité facturation et le suivi des litiges</li>
+            <li>Conception et mise à disposition d'indicateurs de performance et d'activité (KPIs)</li>
+            <li>Analyse de données dans le cadre de projets et de problématiques de facturation</li>
+            <li>Contribution aux missions transverses pour l'ensemble des membres de l'équipe</li>
           </ul>
-          <p><strong>Compétences :</strong> Python, SQL, MySQL, Power BI, Tableau, LookerStudio, VBA, Canva</p>
+          <div class="exp-tags">
+            <span class="exp-tag">Power BI</span>
+            <span class="exp-tag">Power Query</span>
+            <span class="exp-tag">Business Objects</span>
+            <span class="exp-tag">Python</span>
+            <span class="exp-tag">Excel</span>
+            <span class="exp-tag">Data Analysis</span>
+          </div>
         </div>
       </div>
-      <div class="col-md-6 text-md-start text-center">
-        <span class="badge rounded-pill bg-light text-dark shadow-sm px-4 py-2">2024–2027</span>
+
+      <!-- DESCOURS & CABAUD -->
+      <div class="exp-item fade-up">
+        <div class="exp-dot"><i class="fas fa-chart-pie"></i></div>
+        <div class="exp-card">
+          <div class="exp-header">
+            <h4>Assistant Chargé d'Études Marketing</h4>
+            <span class="exp-date">avr. 2025 – mai 2025</span>
+          </div>
+          <div class="exp-company"><i class="fas fa-building"></i> Descours & Cabaud · Lyon</div>
+          <ul class="exp-bullets">
+            <li>Conception et diffusion de questionnaires d'enquêtes marketing via SPHINX</li>
+            <li>Réalisation d'une étude du cycle de vie client pour affiner les stratégies de fidélisation</li>
+            <li>Automatisation et refonte des fiches métiers sous Excel</li>
+            <li>Contribution à la gestion opérationnelle des programmes de fidélité</li>
+          </ul>
+          <div class="exp-tags">
+            <span class="exp-tag">SPHINX</span>
+            <span class="exp-tag">Excel avancé</span>
+            <span class="exp-tag">Power Query</span>
+            <span class="exp-tag">VBA</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOTEL -->
+      <div class="exp-item fade-up">
+        <div class="exp-dot"><i class="fas fa-hotel"></i></div>
+        <div class="exp-card">
+          <div class="exp-header">
+            <h4>Réceptionniste – Gestion des Réservations & CRM</h4>
+            <span class="exp-date">févr. 2023 – juil. 2025</span>
+          </div>
+          <div class="exp-company"><i class="fas fa-building"></i> Hôtel de la Croix Rousse · Lyon</div>
+          <ul class="exp-bullets">
+            <li>Accueil clients, gestion des réservations et encaissements</li>
+            <li>Application des techniques CRM pour la fidélisation de la clientèle</li>
+            <li>Communication inter-équipes et résolution proactive des problèmes</li>
+          </ul>
+          <div class="exp-tags">
+            <span class="exp-tag">CRM</span>
+            <span class="exp-tag">Réservations</span>
+            <span class="exp-tag">Communication</span>
+            <span class="exp-tag">Adaptabilité</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOFTCONTROL -->
+      <div class="exp-item fade-up">
+        <div class="exp-dot"><i class="fas fa-bullhorn"></i></div>
+        <div class="exp-card">
+          <div class="exp-header">
+            <h4>Responsable Marketing e-Commerce</h4>
+            <span class="exp-date">août 2021 – avr. 2025</span>
+          </div>
+          <div class="exp-company"><i class="fas fa-globe"></i> Softcontrol · Cotonou, Bénin (à distance)</div>
+          <ul class="exp-bullets">
+            <li>Pilotage des stratégies digitales et gestion des campagnes publicitaires (Facebook Ads, TikTok)</li>
+            <li>Analyse des performances e-commerce et optimisation des tunnels de conversion</li>
+            <li>Gestion des outils de paiement en ligne et suivi des KPIs commerciaux</li>
+          </ul>
+          <div class="exp-tags">
+            <span class="exp-tag">Marketing digital</span>
+            <span class="exp-tag">Facebook Ads</span>
+            <span class="exp-tag">TikTok</span>
+            <span class="exp-tag">Canva</span>
+            <span class="exp-tag">Stripe</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENQUÊTEUR -->
+      <div class="exp-item fade-up">
+        <div class="exp-dot"><i class="fas fa-poll"></i></div>
+        <div class="exp-card">
+          <div class="exp-header">
+            <h4>Enquêteur Statistique</h4>
+            <span class="exp-date">déc. 2024</span>
+          </div>
+          <div class="exp-company"><i class="fas fa-landmark"></i> IUT Lyon 2 / Mairie d'Oullins-Pierre Bénite</div>
+          <ul class="exp-bullets">
+            <li>Enquête publique sur la perception de la fusion communale (439 réponses collectées)</li>
+            <li>Analyse statistique et traitement des données sous R et Python</li>
+            <li>Rédaction du rapport final et présentation des résultats à la municipalité</li>
+          </ul>
+          <div class="exp-tags">
+            <span class="exp-tag">Statistiques</span>
+            <span class="exp-tag">R</span>
+            <span class="exp-tag">Questionnaires</span>
+            <span class="exp-tag">Rapport</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENSEIGNANT -->
+      <div class="exp-item fade-up">
+        <div class="exp-dot"><i class="fas fa-atom"></i></div>
+        <div class="exp-card">
+          <div class="exp-header">
+            <h4>Enseignant de Physique-Chimie</h4>
+            <span class="exp-date">sept. 2019 – juil. 2022</span>
+          </div>
+          <div class="exp-company"><i class="fas fa-school"></i> Collège d'Enseignement Général · Cotonou, Bénin</div>
+          <ul class="exp-bullets">
+            <li>Préparation et enseignement de cours scientifiques, travaux pratiques et évaluations</li>
+            <li>Suivi pédagogique individualisé et communication avec les familles</li>
+          </ul>
+          <div class="exp-tags">
+            <span class="exp-tag">Enseignement</span>
+            <span class="exp-tag">Pédagogie</span>
+            <span class="exp-tag">Gestion de classe</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section class="section" id="education">
+  <div class="section-header fade-up">
+    <span class="section-eyebrow">Parcours académique</span>
+    <h2>Formation</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="edu-grid">
+    <div class="edu-card fade-up">
+      <span class="edu-year">2024 – 2027</span>
+      <h4><i class="fas fa-university" style="color:var(--primary); margin-right:8px;"></i>IUT Lumière Lyon 2</h4>
+      <div class="degree">BUT Science des données</div>
+      <p>Collecte, analyse et visualisation de données · Création d'outils décisionnels · Bases de données · Automatisation de tableaux de bord · Analyse statistique avancée</p>
+      <br>
+      <div class="exp-tags" style="margin-top:10px;">
+        <span class="exp-tag">Python</span><span class="exp-tag">SQL</span>
+        <span class="exp-tag">Power BI</span><span class="exp-tag">R</span>
+        <span class="exp-tag">Tableau</span><span class="exp-tag">VBA</span>
       </div>
     </div>
-
-    <div class="row mb-5">
-      <div class="col-md-6 offset-md-6">
-        <div class="card shadow-sm p-4 rounded-4">
-          <h5 style="color: var(--main-color);" class="fw-bold">
-          <i class="fas fa-university"></i> Université Claude Bernard Lyon 1
-          </h5>
-          <p>Licence Mathématiques et Informatique – sept. 2023 à juil. 2024</p>
-          <p>Niveau : 11/254</p>
-          <p><strong>Compétences :</strong> C, Python, Scheme, HTML, Algèbre linéaire, Mathématiques, pix</p>
-        </div>
-      </div>
-      <div class="col-md-6 text-md-end text-center">
-        <span class="badge rounded-pill bg-light text-dark shadow-sm px-4 py-2">2023–2024</span>
+    <div class="edu-card fade-up">
+      <span class="edu-year">2023 – 2024</span>
+      <h4><i class="fas fa-university" style="color:var(--primary); margin-right:8px;"></i>Université Claude Bernard Lyon 1</h4>
+      <div class="degree">Licence Mathématiques et Informatique</div>
+      <span class="rank"><i class="fas fa-trophy"></i> Classement : 11 / 254</span>
+      <div class="exp-tags" style="margin-top:10px;">
+        <span class="exp-tag">C</span><span class="exp-tag">Python</span>
+        <span class="exp-tag">Scheme</span><span class="exp-tag">HTML</span>
+        <span class="exp-tag">Algèbre linéaire</span>
       </div>
     </div>
-
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <div class="card shadow-sm p-4 rounded-4">
-          <h5 style="color: var(--main-color);" class="fw-bold">
-          <i class="fas fa-university"></i> Université d'Abomey-Calavi
-          </h5>
-          <p>Licence Chimie – oct. 2013 à mai 2017</p>
-          <p>Niveau : 2/59</p>
-          <p><strong>Compétences :</strong> Chimie physique, analytique, organique, gestion de projet, statistiques, électronique</p>
-        </div>
-      </div>
-      <div class="col-md-6 text-md-start text-center">
-        <span class="badge rounded-pill bg-light text-dark shadow-sm px-4 py-2">2013–2017</span>
+    <div class="edu-card fade-up">
+      <span class="edu-year">2013 – 2017</span>
+      <h4><i class="fas fa-university" style="color:var(--primary); margin-right:8px;"></i>Université d'Abomey-Calavi</h4>
+      <div class="degree">Licence Chimie</div>
+      <span class="rank"><i class="fas fa-trophy"></i> Classement : 2 / 59</span>
+      <div class="exp-tags" style="margin-top:10px;">
+        <span class="exp-tag">Chimie physique</span><span class="exp-tag">Statistiques</span>
+        <span class="exp-tag">Électronique</span>
       </div>
     </div>
   </div>
 </section>
 
-<section id="projects" class="container py-5">
-  <h2 class="section-title"><i class="fas fa-project-diagram"></i> Projets</h2>
-  <div class="timeline position-relative">
-    <div class="border-start border-4 position-absolute top-0 bottom-0 start-50 translate-middle-x" style="border-color: var(--main-color);"></div>
-
-    <div class="row mb-5">
-      <div class="col-md-6">
-        <div class="card shadow-sm p-4 rounded-4">
-          <h5 style="color: var(--main-color);" class="fw-bold">
-          <i class="fas fa-database"></i> SAE 2.01 — Base de données pour ZiK’Occitanie
-          </h5>
-          <p>Conception et implémentation d'une base relationnelle sous MySQL. Requêtes SQL, modélisation MCD/MLD, alimentation et analyse.</p>
-          <p><strong>Compétences :</strong> SQL, MySQL, gestion de projet, travail en équipe</p>
-        </div>
-      </div>
-      <div class="col-md-6 text-md-start text-center">
-        <span class="badge rounded-pill bg-light text-dark shadow-sm px-4 py-2">2025</span>
-      </div>
+<!-- PROJECTS -->
+<section style="background: #f1f5f9; padding: 90px 0;">
+  <div class="section" style="padding-top:0; padding-bottom:0;" id="projects">
+    <div class="section-header fade-up">
+      <span class="section-eyebrow">Réalisations</span>
+      <h2>Projets académiques</h2>
+      <div class="section-divider"></div>
     </div>
-
-    <div class="row mb-5">
-      <div class="col-md-6 offset-md-6">
-        <div class="card shadow-sm p-4 rounded-4">
-          <h5 style="color: var(--main-color);" class="fw-bold">
-          <i class="fas fa-bolt"></i> SAE 2.03 — Prédiction consommation d’électricité
-          </h5>
-          <p>Modélisation statistique sous Python et R pour prédire la consommation. Modèles de régression linéaire, traitement et nettoyage des données.</p>
-          <p><strong>Compétences :</strong> R, Python, statistiques, visualisation, régression</p>
+    <div class="projects-grid">
+      <div class="project-card fade-up">
+        <div class="project-icon"><i class="fas fa-database"></i></div>
+        <h4>SAE 2.01 — Base de données ZiK'Occitanie</h4>
+        <p>Conception et implémentation d'une base relationnelle sous MySQL. Modélisation MCD/MLD, requêtes SQL avancées, alimentation et analyse des données.</p>
+        <div class="exp-tags" style="margin-bottom:12px;">
+          <span class="exp-tag">SQL</span><span class="exp-tag">MySQL</span><span class="exp-tag">Modélisation</span>
         </div>
+        <span class="project-year"><i class="far fa-calendar-alt"></i> 2025</span>
       </div>
-      <div class="col-md-6 text-md-end text-center">
-        <span class="badge rounded-pill bg-light text-dark shadow-sm px-4 py-2">2025</span>
-      </div>
-    </div>
-
-    <div class="row mb-5">
-      <div class="col-md-6">
-        <div class="card shadow-sm p-4 rounded-4">
-          <h5 style="color: var(--main-color);" class="fw-bold"><i class="fas fa-chart-area"></i> SAE 2.02 — Estimation population et superficie</h5>
-          <p>Étude statistique par sondage sur les communes françaises. Intervalles de confiance, effet des valeurs extrêmes, estimation robuste.</p>
-          <p><strong>Compétences :</strong> Inférence statistique, échantillonnage, estimation</p>
+      <div class="project-card fade-up">
+        <div class="project-icon"><i class="fas fa-bolt"></i></div>
+        <h4>SAE 2.03 — Prédiction consommation électricité</h4>
+        <p>Modélisation statistique sous Python et R. Régression linéaire, traitement et nettoyage des données, visualisation des prédictions.</p>
+        <div class="exp-tags" style="margin-bottom:12px;">
+          <span class="exp-tag">R</span><span class="exp-tag">Python</span><span class="exp-tag">Régression</span>
         </div>
+        <span class="project-year"><i class="far fa-calendar-alt"></i> 2025</span>
       </div>
-      <div class="col-md-6 text-md-start text-center">
-        <span class="badge rounded-pill bg-light text-dark shadow-sm px-4 py-2">2025</span>
-      </div>
-    </div>
-
-    <div class="row mb-3">
-      <div class="col-md-6 offset-md-6">
-        <div class="card shadow-sm p-4 rounded-4">
-          <h5 style="color: var(--main-color);" class="fw-bold">
-          <i class="fas fa-poll"></i> SAE 1.06 & 1.07 — Enquête Oullins-Pierre-Bénite
-          </h5>
-          <p>Conception et diffusion d’un questionnaire, collecte et analyse de 439 réponses, présentation des résultats à la municipalité.</p>
-          <p><strong>Compétences :</strong> enquête terrain, codage de données, rapport, recommandations</p>
+      <div class="project-card fade-up">
+        <div class="project-icon"><i class="fas fa-chart-area"></i></div>
+        <h4>SAE 2.02 — Estimation population & superficie</h4>
+        <p>Étude statistique par sondage sur les communes françaises. Intervalles de confiance, analyse des valeurs extrêmes, estimation robuste.</p>
+        <div class="exp-tags" style="margin-bottom:12px;">
+          <span class="exp-tag">Inférence</span><span class="exp-tag">Échantillonnage</span><span class="exp-tag">Estimation</span>
         </div>
+        <span class="project-year"><i class="far fa-calendar-alt"></i> 2025</span>
       </div>
-      <div class="col-md-6 text-md-end text-center">
-        <span class="badge rounded-pill bg-light text-dark shadow-sm px-4 py-2">2024–2025</span>
+      <div class="project-card fade-up">
+        <div class="project-icon"><i class="fas fa-poll"></i></div>
+        <h4>SAE 1.06 & 1.07 — Enquête Oullins-Pierre-Bénite</h4>
+        <p>Conception et diffusion d'un questionnaire, collecte de 439 réponses, analyse des résultats et présentation des recommandations à la municipalité.</p>
+        <div class="exp-tags" style="margin-bottom:12px;">
+          <span class="exp-tag">Enquête</span><span class="exp-tag">Données</span><span class="exp-tag">Rapport</span>
+        </div>
+        <span class="project-year"><i class="far fa-calendar-alt"></i> 2024–2025</span>
       </div>
     </div>
   </div>
 </section>
 
-<section id="contact" class="container">
-  <h2 class="section-title">Contact</h2>
-  <form class="row g-3" action="#" method="post">
-    <div class="col-md-6">
-      <label for="name" class="form-label">Nom</label>
-      <input type="text" class="form-control" id="name" name="name" placeholder="Votre nom" required>
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="section-header fade-up">
+    <span class="section-eyebrow">Me contacter</span>
+    <h2>Restons en contact</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="contact-grid fade-up">
+    <div class="contact-info">
+      <h3>Parlons de votre projet</h3>
+      <p>Ouvert aux opportunités d'alternance, de stage ou de collaboration en data analysis. N'hésitez pas à me contacter !</p>
+      <div class="contact-detail">
+        <div class="icon"><i class="fas fa-envelope"></i></div>
+        <span>tcharisdu229@gmail.com</span>
+      </div>
+      <div class="contact-detail">
+        <div class="icon"><i class="fas fa-phone"></i></div>
+        <span>+33 7 53 00 01 96</span>
+      </div>
+      <div class="contact-detail">
+        <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
+        <span>Lyon, France</span>
+      </div>
+      <div class="social-links">
+        <a href="https://www.linkedin.com/in/aristide-tchetche-a9456622b/" class="social-link" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://github.com/Tcharis" class="social-link" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+      </div>
     </div>
-    <div class="col-md-6">
-      <label for="email" class="form-label">Email</label>
-      <input type="email" class="form-control" id="email" name="email" placeholder="Votre email" required>
-    </div>
-    <div class="col-12">
-      <label for="subject" class="form-label">Sujet</label>
-      <input type="text" class="form-control" id="subject" name="subject" placeholder="Sujet du message" required>
-    </div>
-    <div class="col-12">
-      <label for="message" class="form-label">Message</label>
-      <textarea class="form-control" id="message" name="message" rows="5" placeholder="Votre message..." required></textarea>
-    </div>
-    <div class="col-12">
-      <button type="submit" class="btn btn-main">Envoyer</button>
-    </div>
-  </form>
+    <form class="contact-form" action="https://formspree.io/f/mdawzwgq" method="POST">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Nom complet</label>
+          <input type="text" id="name" name="name" placeholder="Votre nom" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="votre@email.com" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="subject">Sujet</label>
+        <input type="text" id="subject" name="subject" placeholder="Objet de votre message" required>
+      </div>
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" placeholder="Votre message..." required></textarea>
+      </div>
+      <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> Envoyer le message</button>
+    </form>
+  </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
-  &copy; 2025 Aristide TCHETCHE
+  <p>&copy; 2026 <span>Aristide TCHETCHE</span> · Data Analyst · Lyon, France</p>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Navbar scroll effect
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // Mobile menu toggle
+  document.getElementById('navToggle').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+
+  // Close menu on link click
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('navLinks').classList.remove('open');
+    });
+  });
+
+  // Fade-up animations on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
