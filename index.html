@@ -577,6 +577,111 @@
       .stats-inner { grid-template-columns: repeat(2, 1fr); }
       .exp-timeline::before { left: 24px; }
       .form-row { grid-template-columns: 1fr; }
+      .modal-box { max-height: 95vh; margin: 10px; }
+    }
+
+    /* ── MODALS ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(10,15,30,0.65);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-box {
+      background: white; border-radius: 24px;
+      max-width: 700px; width: 100%; max-height: 88vh;
+      overflow-y: auto; position: relative;
+      transform: translateY(40px) scale(0.96);
+      transition: transform 0.38s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+    }
+    .modal-overlay.open .modal-box { transform: translateY(0) scale(1); }
+    .modal-header {
+      padding: 36px 36px 28px;
+      border-radius: 24px 24px 0 0;
+      position: relative;
+    }
+    .modal-header-row { display: flex; align-items: flex-start; gap: 18px; }
+    .modal-icon-wrap {
+      width: 58px; height: 58px; border-radius: 16px;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; color: white; flex-shrink: 0;
+    }
+    .modal-close {
+      position: absolute; top: 18px; right: 18px;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); border: none;
+      color: white; font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.35); }
+    .modal-badge-top {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.2);
+      color: white; padding: 4px 12px; border-radius: 100px;
+      font-size: 0.75rem; font-weight: 700;
+      margin-bottom: 10px; letter-spacing: 0.3px;
+    }
+    .modal-title {
+      font-size: 1.35rem; font-weight: 800;
+      color: white; line-height: 1.25; margin-bottom: 6px;
+    }
+    .modal-company-row {
+      font-size: 0.9rem; color: rgba(255,255,255,0.85);
+      font-weight: 600;
+    }
+    .modal-date-row {
+      font-size: 0.82rem; color: rgba(255,255,255,0.65);
+      margin-top: 3px;
+    }
+    .modal-body { padding: 28px 36px 36px; }
+    .modal-intro {
+      font-size: 0.92rem; color: #4b5563; line-height: 1.7;
+      margin-bottom: 24px; padding-bottom: 24px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .modal-section-label {
+      font-size: 0.75rem; font-weight: 800; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--primary);
+      margin-bottom: 12px; margin-top: 22px;
+    }
+    .modal-mission-list { list-style: none; padding: 0; }
+    .modal-mission-list li {
+      font-size: 0.88rem; color: #374151; padding: 8px 0 8px 20px;
+      position: relative; border-bottom: 1px solid #f8fafc;
+      line-height: 1.55;
+    }
+    .modal-mission-list li::before {
+      content: '▸'; position: absolute; left: 0;
+      color: var(--primary); font-size: 0.8rem; top: 9px;
+    }
+    .modal-mission-list li:last-child { border-bottom: none; }
+    .modal-highlight {
+      background: linear-gradient(135deg, var(--primary-light), #d1fae5);
+      border-left: 4px solid var(--primary);
+      border-radius: 0 10px 10px 0;
+      padding: 14px 18px; margin-top: 20px;
+      font-size: 0.87rem; color: #1f2937; line-height: 1.6;
+    }
+    .modal-highlight strong { color: var(--primary); }
+    .modal-skills-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+    .modal-skill-chip {
+      background: #f1f5f9; color: #475569;
+      padding: 5px 12px; border-radius: 8px;
+      font-size: 0.8rem; font-weight: 600;
+    }
+    .card-clickable { cursor: pointer; }
+    .card-clickable:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+    .click-hint {
+      font-size: 0.75rem; color: var(--primary); margin-top: 10px;
+      display: flex; align-items: center; gap: 5px; opacity: 0.7;
     }
   </style>
 </head>
@@ -602,7 +707,7 @@
   <div class="hero-grid"></div>
   <div class="hero-inner">
     <div class="hero-img-wrap">
-      <img src="photo_profil.png" alt="Portrait Aristide TCHETCHE">
+      <img src="photo_profil.png.jpg" alt="Portrait Aristide TCHETCHE">
       <span class="status-dot" title="En alternance"></span>
     </div>
     <div class="hero-text">
@@ -713,7 +818,7 @@
       <!-- ORANGE WHOLESALE -->
       <div class="exp-item fade-up">
         <div class="exp-dot featured"><i class="fas fa-database"></i></div>
-        <div class="exp-card featured">
+        <div class="exp-card featured card-clickable" data-modal="exp-orange">
           <div class="featured-badge"><i class="fas fa-star"></i> Poste actuel</div>
           <div class="exp-header">
             <h4>Alternant Data Analyst Finance Partner</h4>
@@ -735,13 +840,14 @@
             <span class="exp-tag">Excel</span>
             <span class="exp-tag">Data Analysis</span>
           </div>
+          <p class="click-hint"><i class="fas fa-expand-alt"></i> Cliquer pour plus de détails</p>
         </div>
       </div>
 
       <!-- DESCOURS & CABAUD -->
       <div class="exp-item fade-up">
         <div class="exp-dot"><i class="fas fa-chart-pie"></i></div>
-        <div class="exp-card">
+        <div class="exp-card card-clickable" data-modal="exp-descours">
           <div class="exp-header">
             <h4>Assistant Chargé d'Études Marketing</h4>
             <span class="exp-date">avr. 2025 – mai 2025</span>
@@ -759,13 +865,14 @@
             <span class="exp-tag">Power Query</span>
             <span class="exp-tag">VBA</span>
           </div>
+          <p class="click-hint"><i class="fas fa-expand-alt"></i> Cliquer pour plus de détails</p>
         </div>
       </div>
 
       <!-- HOTEL -->
       <div class="exp-item fade-up">
         <div class="exp-dot"><i class="fas fa-hotel"></i></div>
-        <div class="exp-card">
+        <div class="exp-card card-clickable" data-modal="exp-hotel">
           <div class="exp-header">
             <h4>Réceptionniste – Gestion des Réservations & CRM</h4>
             <span class="exp-date">févr. 2023 – juil. 2025</span>
@@ -782,13 +889,14 @@
             <span class="exp-tag">Communication</span>
             <span class="exp-tag">Adaptabilité</span>
           </div>
+          <p class="click-hint"><i class="fas fa-expand-alt"></i> Cliquer pour plus de détails</p>
         </div>
       </div>
 
       <!-- SOFTCONTROL -->
       <div class="exp-item fade-up">
         <div class="exp-dot"><i class="fas fa-bullhorn"></i></div>
-        <div class="exp-card">
+        <div class="exp-card card-clickable" data-modal="exp-softcontrol">
           <div class="exp-header">
             <h4>Responsable Marketing e-Commerce</h4>
             <span class="exp-date">août 2021 – avr. 2025</span>
@@ -806,13 +914,14 @@
             <span class="exp-tag">Canva</span>
             <span class="exp-tag">Stripe</span>
           </div>
+          <p class="click-hint"><i class="fas fa-expand-alt"></i> Cliquer pour plus de détails</p>
         </div>
       </div>
 
       <!-- ENQUÊTEUR -->
       <div class="exp-item fade-up">
         <div class="exp-dot"><i class="fas fa-poll"></i></div>
-        <div class="exp-card">
+        <div class="exp-card card-clickable" data-modal="exp-enqueteur">
           <div class="exp-header">
             <h4>Enquêteur Statistique</h4>
             <span class="exp-date">déc. 2024</span>
@@ -829,13 +938,14 @@
             <span class="exp-tag">Questionnaires</span>
             <span class="exp-tag">Rapport</span>
           </div>
+          <p class="click-hint"><i class="fas fa-expand-alt"></i> Cliquer pour plus de détails</p>
         </div>
       </div>
 
       <!-- ENSEIGNANT -->
       <div class="exp-item fade-up">
         <div class="exp-dot"><i class="fas fa-atom"></i></div>
-        <div class="exp-card">
+        <div class="exp-card card-clickable" data-modal="exp-enseignant">
           <div class="exp-header">
             <h4>Enseignant de Physique-Chimie</h4>
             <span class="exp-date">sept. 2019 – juil. 2022</span>
@@ -850,6 +960,7 @@
             <span class="exp-tag">Pédagogie</span>
             <span class="exp-tag">Gestion de classe</span>
           </div>
+          <p class="click-hint"><i class="fas fa-expand-alt"></i> Cliquer pour plus de détails</p>
         </div>
       </div>
 
@@ -910,7 +1021,7 @@
       <div class="section-divider"></div>
     </div>
     <div class="projects-grid">
-      <div class="project-card fade-up">
+      <div class="project-card fade-up card-clickable" data-modal="proj-sae201">
         <div class="project-icon"><i class="fas fa-database"></i></div>
         <h4>SAE 2.01 — Base de données ZiK'Occitanie</h4>
         <p>Conception et implémentation d'une base relationnelle sous MySQL. Modélisation MCD/MLD, requêtes SQL avancées, alimentation et analyse des données.</p>
@@ -919,7 +1030,7 @@
         </div>
         <span class="project-year"><i class="far fa-calendar-alt"></i> 2025</span>
       </div>
-      <div class="project-card fade-up">
+      <div class="project-card fade-up card-clickable" data-modal="proj-sae203">
         <div class="project-icon"><i class="fas fa-bolt"></i></div>
         <h4>SAE 2.03 — Prédiction consommation électricité</h4>
         <p>Modélisation statistique sous Python et R. Régression linéaire, traitement et nettoyage des données, visualisation des prédictions.</p>
@@ -928,7 +1039,7 @@
         </div>
         <span class="project-year"><i class="far fa-calendar-alt"></i> 2025</span>
       </div>
-      <div class="project-card fade-up">
+      <div class="project-card fade-up card-clickable" data-modal="proj-sae202">
         <div class="project-icon"><i class="fas fa-chart-area"></i></div>
         <h4>SAE 2.02 — Estimation population & superficie</h4>
         <p>Étude statistique par sondage sur les communes françaises. Intervalles de confiance, analyse des valeurs extrêmes, estimation robuste.</p>
@@ -937,7 +1048,7 @@
         </div>
         <span class="project-year"><i class="far fa-calendar-alt"></i> 2025</span>
       </div>
-      <div class="project-card fade-up">
+      <div class="project-card fade-up card-clickable" data-modal="proj-sae106">
         <div class="project-icon"><i class="fas fa-poll"></i></div>
         <h4>SAE 1.06 & 1.07 — Enquête Oullins-Pierre-Bénite</h4>
         <p>Conception et diffusion d'un questionnaire, collecte de 439 réponses, analyse des résultats et présentation des recommandations à la municipalité.</p>
@@ -947,12 +1058,13 @@
         <span class="project-year"><i class="far fa-calendar-alt"></i> 2024–2025</span>
       </div>
 
-      <div class="project-card fade-up">
+      <div class="project-card fade-up card-clickable" data-modal="proj-piles">
         <div class="project-icon" style="background: linear-gradient(135deg, #e0f4f6, #c7f0ed);"><i class="fas fa-chart-bar" style="color:#007e8a;"></i></div>
         <div style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(90deg,#007e8a,#00a8b8);color:white;padding:3px 10px;border-radius:100px;font-size:0.73rem;font-weight:700;margin-bottom:10px;">
           <i class="fas fa-users"></i> Projet groupe · Mon rôle : Développeur R Shiny
         </div>
-        <p>Étude statistique sur la rémunération dans la filière logistique, menée en partenariat avec le PILES. Chargé du développement du dashboard interactif R Shiny permettant l'analyse comparative des rémunérations.</p>
+        <h4>PILES — Dashboard RH Logistique (R Shiny)</h4>
+        <p>Étude statistique sur la rémunération dans la filière logistique, menée en partenariat avec le Pôle d'Intelligence Logistique. Responsable du développement du dashboard interactif R Shiny permettant l'analyse comparative des salaires sur ~400 salariés issus de 10 entreprises, répartis en 6 profils métiers.</p>
         <div class="exp-tags" style="margin-bottom:12px;">
           <span class="exp-tag">R Shiny</span>
           <span class="exp-tag">ggplot2</span>
@@ -961,7 +1073,7 @@
           <span class="exp-tag">Statistiques RH</span>
           <span class="exp-tag">Data Viz</span>
         </div>
-        <span class="project-year"><i class="far fa-calendar-alt"></i> 2025-2026</span>
+        <span class="project-year"><i class="far fa-calendar-alt"></i> 2025</span>
       </div>
     </div>
   </div>
@@ -1024,37 +1136,318 @@
   <p>&copy; 2026 <span>Aristide TCHETCHE</span> · Data Analyst · Lyon, France</p>
 </footer>
 
+<!-- ── MODAL OVERLAY ── -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-box">
+    <div class="modal-header" id="modalHeader">
+      <div class="modal-header-row">
+        <div class="modal-icon-wrap" id="modalIcon"></div>
+        <div style="flex:1">
+          <div id="modalBadgeTop"></div>
+          <div class="modal-title" id="modalTitle"></div>
+          <div class="modal-company-row" id="modalCompany"></div>
+          <div class="modal-date-row" id="modalDate"></div>
+        </div>
+        <button class="modal-close" id="modalClose" aria-label="Fermer">✕</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <p class="modal-intro" id="modalIntro"></p>
+      <p class="modal-section-label" id="modalMissionsLabel"></p>
+      <ul class="modal-mission-list" id="modalMissions"></ul>
+      <div class="modal-highlight" id="modalHighlight"></div>
+      <div class="modal-skills-wrap" id="modalSkills"></div>
+    </div>
+  </div>
+</div>
+
 <script>
-  // Navbar scroll effect
+  // ── Navbar scroll effect ──
   window.addEventListener('scroll', () => {
     document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
   });
 
-  // Mobile menu toggle
+  // ── Mobile menu toggle ──
   document.getElementById('navToggle').addEventListener('click', () => {
     document.getElementById('navLinks').classList.toggle('open');
   });
-
-  // Close menu on link click
   document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', () => {
       document.getElementById('navLinks').classList.remove('open');
     });
   });
 
-  // Fade-up animations on scroll
+  // ── Fade-up animations on scroll ──
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
-        setTimeout(() => {
-          entry.target.classList.add('visible');
-        }, i * 80);
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
         observer.unobserve(entry.target);
       }
     });
   }, { threshold: 0.12 });
-
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // ── MODAL DATA ──
+  const MODALS = {
+    'exp-orange': {
+      icon: '🟠',
+      badge: 'Poste actuel · Alternance',
+      title: 'Alternant Data Analyst Finance Partner',
+      company: 'Orange Wholesale France — Équipe PC2R',
+      date: 'Septembre 2025 – Août 2027 · Lyon',
+      intro: "Au sein de l'équipe PC2R (Parcours Facturation, Recouvrement & Certification) d'Orange Wholesale France — entité B2B générant +7 Mds€ de CA — je contribue au pilotage de l'activité financière par la donnée.",
+      missionsLabel: 'Missions principales',
+      missions: [
+        "Création et automatisation de reportings Power BI pour le suivi de la facturation et des litiges clients",
+        "Conception de KPIs stratégiques à destination de la DSO (Direction Suivi des Opérations)",
+        "Analyse de données complexes liées aux problématiques de facturation inter-opérateurs",
+        "Automatisation de flux de données via Power Query et Python (nettoyage, consolidation, exports)",
+        "Contribution aux missions transverses au sein d'une équipe de 9 personnes"
+      ],
+      highlight: "💡 Contexte : Orange Wholesale est l'entité de gros d'Orange Group, opérant sur les marchés B2B internationaux. L'équipe PC2R gère les processus de facturation, recouvrement et certification pour des clients opérateurs.",
+      skills: ['Power BI', 'Power Query', 'Business Objects', 'Python', 'Excel avancé', 'DAX', 'Automatisation']
+    },
+    'exp-descours': {
+      icon: '📊',
+      badge: 'Stage · Marketing',
+      title: 'Assistant Chargé d\'Études Marketing',
+      company: 'Descours & Cabaud',
+      date: 'Avril – Mai 2025 · Lyon',
+      intro: "Stage au sein de Descours & Cabaud, groupe industriel de distribution, où j'ai mené des études marketing et contribué à la modernisation des outils internes.",
+      missionsLabel: 'Missions réalisées',
+      missions: [
+        "Conception et diffusion de questionnaires d'enquêtes marketing via l'outil SPHINX",
+        "Étude du cycle de vie client pour identifier les leviers de fidélisation et de rétention",
+        "Automatisation et refonte complète des fiches métiers sous Excel (VBA + Power Query)",
+        "Analyse des résultats d'enquête et présentation des insights à l'équipe marketing"
+      ],
+      highlight: "💡 Résultat clé : Gain de temps significatif sur la mise à jour des fiches métiers grâce à l'automatisation VBA, permettant à l'équipe de se concentrer sur l'analyse.",
+      skills: ['SPHINX', 'Excel avancé', 'Power Query', 'VBA / Macros', 'Études marketing']
+    },
+    'exp-hotel': {
+      icon: '🏨',
+      badge: 'CDI temps partiel · CRM',
+      title: 'Réceptionniste – Gestion des Réservations & CRM',
+      company: 'Hôtel de la Croix Rousse',
+      date: 'Février 2023 – Juillet 2025 · Lyon',
+      intro: "Poste polyvalent à la réception d'un hôtel lyonnais, combinant accueil client, gestion des réservations et application des techniques CRM pour fidéliser la clientèle.",
+      missionsLabel: 'Responsabilités',
+      missions: [
+        "Accueil physique et téléphonique des clients, check-in / check-out et encaissements",
+        "Gestion des réservations (OTA, direct) et optimisation du taux d'occupation",
+        "Application des techniques CRM : suivi des préférences clients, fidélisation personnalisée",
+        "Gestion des réclamations et maintien d'une satisfaction client élevée"
+      ],
+      highlight: "💡 Compétence clé développée : relation client de qualité, gestion du stress et communication interculturelle — essentielles dans un environnement data analyst orienté business.",
+      skills: ['CRM', 'Gestion des réservations', 'Communication', 'Service client']
+    },
+    'exp-softcontrol': {
+      icon: '🌐',
+      badge: 'Freelance · Marketing digital',
+      title: 'Responsable Marketing e-Commerce',
+      company: 'Softcontrol',
+      date: 'Août 2021 – Avril 2025 · Cotonou, Bénin (à distance)',
+      intro: "Gestion autonome des stratégies marketing digitales d'une entreprise e-commerce béninoise, avec pilotage complet des campagnes publicitaires et analyse des performances.",
+      missionsLabel: 'Réalisations',
+      missions: [
+        "Pilotage des stratégies digitales : création de contenus, campagnes Facebook Ads et TikTok",
+        "Analyse des performances e-commerce (taux de conversion, CPA, ROAS) et optimisation des tunnels",
+        "Suivi des KPIs commerciaux via tableaux de bord et reporting hebdomadaire",
+        "Gestion des outils de paiement en ligne (Stripe, Mobile Money) et SAV",
+        "Croissance de la communauté et du chiffre d'affaires via une stratégie de contenu ciblée"
+      ],
+      highlight: "💡 Expérience fondatrice : développement d'une sensibilité data-driven appliquée au business réel, avec mesure constante du ROI et prise de décision basée sur les chiffres.",
+      skills: ['Marketing digital', 'Facebook Ads', 'TikTok Ads', 'Analyse de performance', 'Canva', 'Stripe']
+    },
+    'exp-enqueteur': {
+      icon: '📋',
+      badge: 'Mission · Statistiques',
+      title: 'Enquêteur Statistique',
+      company: 'IUT Lyon 2 / Mairie d\'Oullins-Pierre-Bénite',
+      date: 'Décembre 2024 · Oullins',
+      intro: "Mission de collecte et d'analyse de données dans le cadre d'une enquête publique sur la fusion communale d'Oullins et Pierre-Bénite, commandée par la municipalité.",
+      missionsLabel: 'Déroulement',
+      missions: [
+        "Collecte terrain de 439 réponses via questionnaire structuré auprès des habitants",
+        "Codification et saisie des données, contrôle qualité et traitement des valeurs manquantes",
+        "Analyse statistique descriptive et inférentielle sous R et Python",
+        "Rédaction du rapport final de synthèse et des recommandations",
+        "Présentation orale des résultats à la municipalité d'Oullins-Pierre-Bénite"
+      ],
+      highlight: "💡 Impact concret : 439 réponses collectées et analysées, rapport remis à la mairie pour éclairer une décision de gouvernance locale.",
+      skills: ['R', 'Python', 'Statistiques descriptives', 'Questionnaires', 'Rapport d\'analyse']
+    },
+    'exp-enseignant': {
+      icon: '🎓',
+      badge: 'CDI · Enseignement',
+      title: 'Enseignant de Physique-Chimie',
+      company: 'Collège d\'Enseignement Général',
+      date: 'Septembre 2019 – Juillet 2022 · Cotonou, Bénin',
+      intro: "Enseignement des sciences physiques et chimiques au sein d'un collège béninois, développant des compétences solides en pédagogie, communication et gestion de groupe.",
+      missionsLabel: 'Activités',
+      missions: [
+        "Préparation et animation de cours de physique-chimie pour des classes de collège",
+        "Conception et encadrement de travaux pratiques en laboratoire",
+        "Élaboration et correction des évaluations, suivi des progressions individuelles",
+        "Communication régulière avec les familles et participation aux conseils de classe"
+      ],
+      highlight: "💡 Compétences transférables : capacité à vulgariser des concepts complexes, rigueur analytique et pédagogie — atouts précieux pour communiquer des insights data à des non-techniciens.",
+      skills: ['Pédagogie', 'Gestion de classe', 'Communication', 'Rigueur scientifique']
+    },
+    'proj-sae201': {
+      icon: '🗄️',
+      badge: 'Projet académique · SQL',
+      title: 'SAE 2.01 — Base de données ZiK\'Occitanie',
+      company: 'IUT Lumière Lyon 2',
+      date: '2025',
+      intro: "Projet de conception et d'implémentation d'une base de données relationnelle complète pour une plateforme musicale fictive ZiK'Occitanie, dans le cadre des SAE (Situations d'Apprentissage et d'Évaluation) du BUT SD.",
+      missionsLabel: 'Travaux réalisés',
+      missions: [
+        "Analyse des besoins et modélisation Conceptuelle des Données (MCD) avec entités, associations et cardinalités",
+        "Traduction en Modèle Logique des Données (MLD) et création des tables sous MySQL",
+        "Rédaction de requêtes SQL avancées : jointures multiples, sous-requêtes, agrégations, vues",
+        "Optimisation des performances via index et contraintes d'intégrité référentielle",
+        "Documentation technique du projet et présentation orale"
+      ],
+      highlight: "💡 Compétence clé : maîtrise du cycle complet de conception BDD, de la modélisation conceptuelle à l'implémentation et l'interrogation.",
+      skills: ['SQL', 'MySQL', 'MCD / MLD', 'Modélisation', 'Requêtes avancées']
+    },
+    'proj-sae203': {
+      icon: '⚡',
+      badge: 'Projet académique · Prédiction',
+      title: 'SAE 2.03 — Prédiction consommation électricité',
+      company: 'IUT Lumière Lyon 2',
+      date: '2025',
+      intro: "Projet de modélisation statistique visant à prédire la consommation électrique nationale à partir de séries temporelles, en combinant Python et R.",
+      missionsLabel: 'Étapes du projet',
+      missions: [
+        "Collecte et préparation des données de consommation électrique (nettoyage, gestion des valeurs aberrantes)",
+        "Analyse exploratoire : tendances, saisonnalité, corrélations avec variables climatiques",
+        "Modélisation par régression linéaire multiple et validation croisée sous Python et R",
+        "Visualisation des prédictions vs. réel et interprétation des résidus",
+        "Rapport de synthèse avec recommandations pour améliorer le modèle"
+      ],
+      highlight: "💡 Résultat : modèle de régression avec un R² satisfaisant, illustrant l'impact de la température sur la consommation électrique saisonnière.",
+      skills: ['Python', 'R', 'Régression linéaire', 'Séries temporelles', 'Visualisation', 'Statistiques']
+    },
+    'proj-sae202': {
+      icon: '🔍',
+      badge: 'Projet académique · Exploration',
+      title: 'SAE 2.02 — Exploration & Visualisation de données',
+      company: 'IUT Lumière Lyon 2',
+      date: '2025',
+      intro: "Projet d'analyse exploratoire et de visualisation de données réelles, avec production d'un tableau de bord interactif pour communiquer les insights.",
+      missionsLabel: 'Réalisations',
+      missions: [
+        "Exploration et nettoyage d'un jeu de données réel (valeurs manquantes, outliers, normalisation)",
+        "Analyse statistique descriptive et identification des variables pertinentes",
+        "Création de visualisations pertinentes avec ggplot2 (R) et matplotlib/seaborn (Python)",
+        "Construction d'un tableau de bord synthétique pour la restitution des résultats"
+      ],
+      highlight: "💡 Accent mis sur la storytelling data : transformer des chiffres bruts en visualisations claires et actionnables pour un public non-technique.",
+      skills: ['R', 'ggplot2', 'Python', 'matplotlib', 'Exploration de données', 'Dataviz']
+    },
+    'proj-sae106': {
+      icon: '🏙️',
+      badge: 'Projet terrain · Enquête',
+      title: 'SAE 1.06 & 1.07 — Enquête Oullins-Pierre-Bénite',
+      company: 'IUT Lumière Lyon 2 / Mairie d\'Oullins',
+      date: '2024–2025',
+      intro: "Enquête terrain et analyse statistique sur la perception de la fusion communale d'Oullins et Pierre-Bénite, menée en collaboration avec la municipalité.",
+      missionsLabel: 'Déroulement',
+      missions: [
+        "Conception du questionnaire et stratégie d'échantillonnage représentatif",
+        "Collecte de 439 réponses par enquête terrain directe auprès des habitants",
+        "Codification des données qualitatives et saisie structurée",
+        "Analyse bivariée et croisements statistiques pour dégager des tendances",
+        "Rédaction du rapport final et présentation à la municipalité"
+      ],
+      highlight: "💡 Projet mené de A à Z : de la conception du protocole d'enquête à la restitution des résultats devant des élus locaux.",
+      skills: ['Enquête terrain', 'Codage de données', 'Statistiques', 'R', 'Rapport d\'analyse', 'Présentation orale']
+    },
+    'proj-piles': {
+      icon: '📦',
+      badge: 'Projet R Shiny · Dashboard',
+      title: 'PILES — Dashboard Logistique Interactif',
+      company: 'IUT Lumière Lyon 2 (Projet tutoré)',
+      date: '2024–2025',
+      intro: "Développement d'un tableau de bord interactif R Shiny dans le cadre d'une étude logistique sur les salaires de ~400 employés répartis dans 10 entreprises et 6 profils métiers.",
+      missionsLabel: 'Rôle & réalisations',
+      missions: [
+        "Développement complet de l'application R Shiny (shinydashboard) : interface, navigation, thème visuel",
+        "Intégration de graphiques dynamiques Plotly (boxplots, scatter plots, histogrammes interactifs)",
+        "Implémentation de tests statistiques non-paramétriques de Wilcoxon pour comparaisons inter-groupes",
+        "Création de filtres interactifs (entreprise, profil, région) pour exploration personnalisée des données",
+        "Optimisation des performances de l'application et gestion des données réactives (reactive())",
+        "Coordination avec l'équipe pour intégrer les analyses statistiques au dashboard"
+      ],
+      highlight: "💡 Compétence avancée : maîtrise de la programmation réactive Shiny, permettant de construire des outils d'analyse self-service accessibles à des non-techniciens.",
+      skills: ['R Shiny', 'shinydashboard', 'Plotly', 'ggplot2', 'Wilcoxon', 'Statistiques', 'Programmation réactive']
+    }
+  };
+
+  // ── MODAL FUNCTIONS ──
+  function openModal(id) {
+    const d = MODALS[id];
+    if (!d) return;
+    document.getElementById('modalIcon').textContent = d.icon || '';
+    document.getElementById('modalBadgeTop').innerHTML = d.badge
+      ? `<span class="modal-badge-top">${d.badge}</span>` : '';
+    document.getElementById('modalTitle').textContent = d.title;
+    document.getElementById('modalCompany').innerHTML =
+      `<i class="fas fa-building" style="color:var(--primary);margin-right:6px"></i>${d.company}`;
+    document.getElementById('modalDate').innerHTML =
+      `<i class="fas fa-calendar-alt" style="margin-right:6px;opacity:.7"></i>${d.date}`;
+    document.getElementById('modalIntro').textContent = d.intro;
+    if (d.missionsLabel) {
+      document.getElementById('modalMissionsLabel').style.display = '';
+      document.getElementById('modalMissionsLabel').textContent = d.missionsLabel;
+    } else {
+      document.getElementById('modalMissionsLabel').style.display = 'none';
+    }
+    const ul = document.getElementById('modalMissions');
+    ul.innerHTML = '';
+    (d.missions || []).forEach(m => {
+      const li = document.createElement('li');
+      li.textContent = m;
+      ul.appendChild(li);
+    });
+    const hl = document.getElementById('modalHighlight');
+    if (d.highlight) {
+      hl.style.display = '';
+      hl.innerHTML = d.highlight;
+    } else {
+      hl.style.display = 'none';
+    }
+    const sw = document.getElementById('modalSkills');
+    sw.innerHTML = '';
+    (d.skills || []).forEach(s => {
+      const chip = document.createElement('span');
+      chip.className = 'modal-skill-chip';
+      chip.textContent = s;
+      sw.appendChild(chip);
+    });
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ── MODAL EVENT LISTENERS ──
+  document.querySelectorAll('[data-modal]').forEach(el => {
+    el.addEventListener('click', () => openModal(el.dataset.modal));
+  });
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.getElementById('modalOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
 </script>
 </body>
 </html>
