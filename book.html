@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aristide TCHETCHE — L'Histoire</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;font-family:'EB Garamond',serif;background:#1a110a;overflow:hidden;user-select:none}
+
+/* WOOD BG */
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background:
+    repeating-linear-gradient(88deg,transparent 0,rgba(255,255,255,.012) 1px,transparent 2px,transparent 50px),
+    repeating-linear-gradient(2deg,transparent 0,rgba(0,0,0,.04) 1px,transparent 2px,transparent 70px),
+    linear-gradient(180deg,#2a1f13 0%,#1a110a 50%,#120c05 100%);
+  pointer-events:none}
+
+/* BOOK STAGE */
+.stage{position:fixed;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;perspective:1800px}
+
+/* BOOK WRAPPER */
+.book{position:relative;width:min(900px,95vw);height:min(620px,90vh);transform-style:preserve-3d}
+
+/* PAGES */
+.spread{position:absolute;inset:0;display:flex;border-radius:4px 4px 4px 4px;box-shadow:-12px 4px 40px rgba(0,0,0,.6),12px 4px 40px rgba(0,0,0,.4),0 20px 60px rgba(0,0,0,.5);transform-origin:center;transition:transform .1s}
+.page-left,.page-right{width:50%;height:100%;position:relative;overflow:hidden}
+.page-left{background:linear-gradient(to right,#f0e8d8 0%,#f7f0e0 100%);border-radius:4px 0 0 4px;
+  box-shadow:inset -8px 0 16px rgba(0,0,0,.12)}
+.page-right{background:linear-gradient(to left,#ece4d4 0%,#f5eed8 100%);border-radius:0 4px 4px 0;
+  box-shadow:inset 8px 0 16px rgba(0,0,0,.08)}
+
+/* SPINE */
+.spine{position:absolute;left:50%;top:0;bottom:0;width:16px;transform:translateX(-50%);z-index:10;
+  background:linear-gradient(to right,#8b6a3a 0%,#c4a06a 40%,#8b6a3a 100%);
+  box-shadow:0 0 8px rgba(0,0,0,.4)}
+.spine::before,.spine::after{content:'';position:absolute;left:0;right:0;height:100%;
+  background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.15) 50%,transparent 100%)}
+
+/* PAGE CONTENT */
+.page-content{padding:44px 38px 60px 52px;height:100%;overflow:hidden;position:relative}
+.page-right .page-content{padding:44px 52px 60px 38px}
+
+/* LEFT MARGIN RED LINE */
+.page-left .page-content::before{content:'';position:absolute;left:44px;top:0;bottom:0;width:1px;background:rgba(180,40,40,.2)}
+
+/* LINES */
+.page-content::after{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(to bottom,transparent 0,transparent 27px,rgba(0,0,0,.06) 27px,rgba(0,0,0,.06) 28px);
+  pointer-events:none}
+
+/* PAGE NUMBER */
+.pnum{position:absolute;bottom:20px;font-family:'DM Mono',monospace;font-size:.65rem;color:rgba(60,40,20,.4);letter-spacing:2px}
+.page-left .pnum{left:50%;transform:translateX(-50%)}
+.page-right .pnum{right:50%;transform:translateX(50%)}
+
+/* CHAPTER */
+.ch-label{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:4px;text-transform:uppercase;color:#8b5e2a;margin-bottom:8px;display:block}
+.ch-title{font-size:1.7rem;font-weight:800;color:#1a0e05;line-height:1.15;margin-bottom:20px;padding-bottom:16px;border-bottom:1.5px solid rgba(139,94,42,.2);position:relative}
+.ch-title::after{content:'';position:absolute;bottom:-1.5px;left:0;width:48px;height:1.5px;background:#8b5e2a}
+.body-txt{font-size:1.02rem;line-height:1.85;color:#2c1f10;margin-bottom:16px}
+.body-txt strong{color:#6b3a1f;font-weight:700}
+.dropcap::first-letter{font-size:3.2rem;font-weight:800;float:left;line-height:.75;margin:4px 8px 0 0;color:#8b5e2a}
+.quote{border-left:3px solid #c4a06a;padding:12px 20px;margin:18px 0;background:rgba(196,160,106,.06);border-radius:0 6px 6px 0}
+.quote p{font-style:italic;font-size:1rem;color:#4a3020;line-height:1.7}
+
+/* TIMELINE IN BOOK */
+.btl{margin:12px 0}
+.btl-item{display:flex;gap:14px;margin-bottom:14px}
+.btl-dot{flex-shrink:0;width:10px;height:10px;border-radius:50%;background:#8b5e2a;margin-top:6px;box-shadow:0 0 0 3px rgba(139,94,42,.15)}
+.btl-content{}
+.btl-title{font-size:.92rem;font-weight:700;color:#1a0e05;margin-bottom:2px}
+.btl-co{font-size:.78rem;color:#8b5e2a;font-weight:600;margin-bottom:1px}
+.btl-date{font-family:'DM Mono',monospace;font-size:.62rem;color:#9a7a5a;margin-bottom:5px}
+.btl-tags{display:flex;flex-wrap:wrap;gap:4px}
+.btag{background:rgba(139,94,42,.1);color:#6b3a1f;padding:1px 7px;border-radius:4px;font-size:.68rem}
+
+/* PILLS */
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
+.pill{background:rgba(139,94,42,.1);color:#6b3a1f;padding:3px 10px;border-radius:100px;font-size:.75rem}
+
+/* PROJ ITEM */
+.bproj{padding:10px 0;border-bottom:1px solid rgba(139,94,42,.12)}
+.bproj:last-child{border:none}
+.bproj-t{font-size:.9rem;font-weight:700;color:#1a0e05;margin-bottom:3px}
+.bproj-d{font-size:.78rem;color:#5a3d28;line-height:1.5;margin-bottom:5px}
+
+/* CONTACT ITEM */
+.citem{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;padding:10px 12px;background:rgba(139,94,42,.06);border-radius:8px;border:1px solid rgba(139,94,42,.12)}
+.cico{font-size:.95rem;margin-top:2px}
+.clabel{font-family:'DM Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:1px;color:#8b5e2a;margin-bottom:2px}
+.cval{font-size:.82rem;color:#2c1f10}
+
+/* INTERESTS */
+.int-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.int-item{text-align:center;padding:12px 6px;background:rgba(196,160,106,.08);border-radius:8px;border:1px solid rgba(196,160,106,.2)}
+.int-ico{font-size:1.3rem;display:block;margin-bottom:4px}
+.int-n{font-size:.72rem;color:#5a3d28}
+
+/* COVER */
+.cover-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:20px}
+.cov-eyebrow{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:4px;text-transform:uppercase;color:#8b5e2a;margin-bottom:20px}
+.cov-h1{font-size:2rem;font-weight:800;color:#1a0e05;line-height:1.1;margin-bottom:8px}
+.cov-sub{font-style:italic;font-size:1.1rem;color:#5a3d28;margin-bottom:24px}
+.cov-div{width:60px;height:1.5px;background:linear-gradient(90deg,transparent,#c4a06a,transparent);margin:0 auto 20px}
+.cov-desc{font-style:italic;font-size:.88rem;color:#7a5a3a;line-height:1.7;max-width:240px;margin-bottom:20px}
+.cov-orn{font-size:1.5rem;color:#c4a06a;opacity:.5;margin:12px 0}
+
+/* EPIL */
+.epil{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:16px}
+.epil-q{font-style:italic;font-size:1.05rem;color:#5a3d28;line-height:1.7;max-width:260px}
+.epil-end{font-size:1.8rem;font-weight:800;color:#1a0e05}
+.epil-sub{font-size:.82rem;color:#9a7a5a;font-style:italic}
+
+/* NAVIGATION */
+.nav-wrap{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:16px;background:rgba(26,17,10,.9);border:1px solid rgba(196,160,106,.25);padding:10px 24px;border-radius:100px;backdrop-filter:blur(12px)}
+.nav-btn{background:none;border:none;color:#c4a06a;font-size:1.1rem;cursor:pointer;padding:4px 8px;transition:opacity .2s;font-family:'EB Garamond',serif}
+.nav-btn:hover{opacity:.6}
+.nav-btn:disabled{opacity:.2;cursor:default}
+.pcount{font-family:'DM Mono',monospace;font-size:.65rem;color:rgba(196,160,106,.6);letter-spacing:2px;min-width:50px;text-align:center}
+
+.nav-top{position:fixed;top:16px;left:16px;z-index:100}
+.back-btn{background:rgba(26,17,10,.8);border:1px solid rgba(196,160,106,.25);color:#c4a06a;padding:8px 16px;border-radius:8px;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:1px;text-decoration:none;transition:all .2s;backdrop-filter:blur(8px);display:inline-block}
+.back-btn:hover{background:rgba(196,160,106,.15)}
+
+/* PAGE TURN ANIMATION */
+.spread.turning{animation:pageTurn .5s ease-in-out}
+@keyframes pageTurn{
+  0%{transform:perspective(1800px) rotateY(0deg)}
+  50%{transform:perspective(1800px) rotateY(-8deg) scale(.98)}
+  100%{transform:perspective(1800px) rotateY(0deg)}
+}
+</style>
+</head>
+<body>
+<a href="index.html" class="back-btn nav-top">← Retour</a>
+
+<div class="stage">
+  <div class="book">
+    <div class="spread" id="spread">
+      <div class="page-left" id="pl"><div class="page-content" id="plc"></div><span class="pnum" id="pnl"></span></div>
+      <div class="spine"></div>
+      <div class="page-right" id="pr"><div class="page-content" id="prc"></div><span class="pnum" id="pnr"></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-wrap">
+  <button class="nav-btn" id="prevBtn" onclick="prevPage()">◀ Précédent</button>
+  <span class="pcount" id="pcount">1 / 8</span>
+  <button class="nav-btn" id="nextBtn" onclick="nextPage()">Suivant ▶</button>
+</div>
+
+<script>
+const PAGES = [
+  // Page 0: Couverture gauche (vide) + droite (couverture)
+  {
+    left: `<div class="cover-inner" style="height:100%">
+      <div class="cov-orn">✦</div>
+      <p style="font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:3px;color:rgba(139,94,42,.4);text-transform:uppercase">Portfolio · 2025</p>
+    </div>`,
+    right: `<div class="cover-inner">
+      <span class="cov-eyebrow">Les Chroniques d'un</span>
+      <div class="cov-orn">❧</div>
+      <h1 class="cov-h1">Data Analyst</h1>
+      <p class="cov-sub">De la chimie à la data</p>
+      <div class="cov-div"></div>
+      <p class="cov-desc">"L'histoire d'un scientifique curieux qui a transformé sa rigueur en insight et ses données en décisions."</p>
+      <div class="cov-orn">✦</div>
+      <p style="font-size:.82rem;color:#8b5e2a;font-weight:600">— Aristide TCHETCHE</p>
+    </div>`,
+    ln: '— i —', rn: '— ii —'
+  },
+  // Page 1: Prologue
+  {
+    left: `<span class="ch-label">Prologue</span>
+    <h2 class="ch-title">Le Commencement</h2>
+    <p class="body-txt dropcap">Tout a commencé par une équation chimique. Puis une série statistique. Puis une question : <em>et si les données pouvaient raconter quelque chose d'important ?</em></p>
+    <p class="body-txt">Je m'appelle <strong>Aristide TCHETCHE</strong>, Data Analyst en alternance chez <strong>Orange Wholesale France</strong> à Lyon. Béninois d'origine, Lyonnais d'adoption.</p>
+    <div class="quote"><p>"Curieux, rigoureux et engagé — je transforme les données brutes en décisions éclairées."</p></div>`,
+    right: `<p class="body-txt" style="margin-top:8px">Mon parcours est atypique : Licence de Chimie <strong>(2e/59)</strong>, puis Maths/Informatique <strong>(11e/254)</strong>, puis BUT Science des Données. Chaque étape m'a appris à voir le monde avec plus de précision.</p>
+    <p class="body-txt"><strong>Localisation :</strong> Lyon, France<br><strong>Formation :</strong> BUT SD — IUT Lumière Lyon 2<br><strong>Langues :</strong> Français · Anglais · Adja<br><strong>Email :</strong> aristidetchetche6@gmail.com</p>
+    <div class="quote"><p>"De Cotonou à Lyon, la même rigueur scientifique, un nouveau terrain d'application."</p></div>`,
+    ln: '— 1 —', rn: '— 2 —'
+  },
+  // Page 2: Compétences
+  {
+    left: `<span class="ch-label">Chapitre I</span>
+    <h2 class="ch-title">L'Arsenal Technique</h2>
+    <p class="body-txt">Au fil des années, j'ai forgé un ensemble d'outils — de la modélisation statistique au tableau de bord interactif.</p>
+    <p style="font-size:.78rem;font-weight:700;color:#8b5e2a;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">Analyse & BI</p>
+    <div class="pills"><span class="pill">Power BI</span><span class="pill">Business Objects</span><span class="pill">LookerStudio</span><span class="pill">Tableau</span></div>
+    <p style="font-size:.78rem;font-weight:700;color:#8b5e2a;text-transform:uppercase;letter-spacing:2px;margin:12px 0 8px">Langages & Stats</p>
+    <div class="pills"><span class="pill">Python</span><span class="pill">R</span><span class="pill">SQL / MySQL</span><span class="pill">Statistiques</span></div>`,
+    right: `<p style="font-size:.78rem;font-weight:700;color:#8b5e2a;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;margin-top:8px">Data & Visualisation</p>
+    <div class="pills"><span class="pill">R Shiny</span><span class="pill">ggplot2</span><span class="pill">Plotly</span><span class="pill">matplotlib</span><span class="pill">seaborn</span></div>
+    <p style="font-size:.78rem;font-weight:700;color:#8b5e2a;text-transform:uppercase;letter-spacing:2px;margin:12px 0 8px">Outils & Productivité</p>
+    <div class="pills"><span class="pill">Excel avancé</span><span class="pill">Power Query</span><span class="pill">VBA</span><span class="pill">SPHINX</span><span class="pill">Git</span><span class="pill">CRM</span></div>
+    <div class="quote" style="margin-top:20px"><p>"Les données ne mentent pas. Encore faut-il savoir les écouter."</p></div>`,
+    ln: '— 3 —', rn: '— 4 —'
+  },
+  // Page 3: Expériences
+  {
+    left: `<span class="ch-label">Chapitre II</span>
+    <h2 class="ch-title">Le Parcours Professionnel</h2>
+    <div class="btl">
+      <div class="btl-item">
+        <div class="btl-dot" style="background:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.2)"></div>
+        <div class="btl-content">
+          <div class="btl-title">⭐ Alternant Data Analyst Finance Partner</div>
+          <div class="btl-co">Orange Wholesale France · Lyon</div>
+          <div class="btl-date">sept. 2025 – août 2027</div>
+          <div class="btl-tags"><span class="btag">Power BI</span><span class="btag">Power Query</span><span class="btag">Business Objects</span><span class="btag">Python</span></div>
+        </div>
+      </div>
+      <div class="btl-item">
+        <div class="btl-dot"></div>
+        <div class="btl-content">
+          <div class="btl-title">Assistant Chargé d'Études Marketing</div>
+          <div class="btl-co">Descours & Cabaud · Lyon</div>
+          <div class="btl-date">avr. 2025 – mai 2025</div>
+          <div class="btl-tags"><span class="btag">SPHINX</span><span class="btag">Excel</span><span class="btag">VBA</span></div>
+        </div>
+      </div>
+    </div>`,
+    right: `<div class="btl" style="margin-top:8px">
+      <div class="btl-item">
+        <div class="btl-dot"></div>
+        <div class="btl-content">
+          <div class="btl-title">Réceptionniste – Gestion CRM</div>
+          <div class="btl-co">Hôtel de la Croix Rousse · Lyon</div>
+          <div class="btl-date">févr. 2023 – juil. 2025</div>
+          <div class="btl-tags"><span class="btag">CRM</span><span class="btag">Communication</span></div>
+        </div>
+      </div>
+      <div class="btl-item">
+        <div class="btl-dot"></div>
+        <div class="btl-content">
+          <div class="btl-title">Responsable Marketing e-Commerce</div>
+          <div class="btl-co">Softcontrol · Cotonou (remote)</div>
+          <div class="btl-date">août 2021 – avr. 2025</div>
+          <div class="btl-tags"><span class="btag">Facebook Ads</span><span class="btag">TikTok</span><span class="btag">KPIs</span></div>
+        </div>
+      </div>
+      <div class="btl-item">
+        <div class="btl-dot"></div>
+        <div class="btl-content">
+          <div class="btl-title">Enseignant de Physique-Chimie</div>
+          <div class="btl-co">Collège d'Enseignement Général · Cotonou</div>
+          <div class="btl-date">sept. 2019 – juil. 2022</div>
+          <div class="btl-tags"><span class="btag">Pédagogie</span><span class="btag">Sciences</span></div>
+        </div>
+      </div>
+    </div>`,
+    ln: '— 5 —', rn: '— 6 —'
+  },
+  // Page 4: Formation
+  {
+    left: `<span class="ch-label">Chapitre III</span>
+    <h2 class="ch-title">L'Éducation</h2>
+    <p class="body-txt">Trois universités. Deux pays. Un fil conducteur : la rigueur scientifique.</p>
+    <div class="btl">
+      <div class="btl-item">
+        <div class="btl-dot" style="background:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.2)"></div>
+        <div class="btl-content">
+          <div class="btl-title">BUT Science des Données</div>
+          <div class="btl-co">IUT Lumière Lyon 2</div>
+          <div class="btl-date">2024 – 2027 · En alternance</div>
+          <div class="btl-tags"><span class="btag">Python</span><span class="btag">SQL</span><span class="btag">Power BI</span><span class="btag">R</span></div>
+        </div>
+      </div>
+      <div class="btl-item">
+        <div class="btl-dot"></div>
+        <div class="btl-content">
+          <div class="btl-title">Licence Mathématiques & Informatique</div>
+          <div class="btl-co">Université Claude Bernard Lyon 1</div>
+          <div class="btl-date">2023 – 2024 · 🏆 11e / 254</div>
+          <div class="btl-tags"><span class="btag">C</span><span class="btag">Python</span><span class="btag">Algèbre</span></div>
+        </div>
+      </div>
+    </div>`,
+    right: `<div class="btl" style="margin-top:8px">
+      <div class="btl-item">
+        <div class="btl-dot"></div>
+        <div class="btl-content">
+          <div class="btl-title">Licence Chimie</div>
+          <div class="btl-co">Université d'Abomey-Calavi, Bénin</div>
+          <div class="btl-date">2013 – 2017 · 🏆 2e / 59</div>
+          <div class="btl-tags"><span class="btag">Chimie</span><span class="btag">Statistiques</span><span class="btag">Rigueur</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="quote" style="margin-top:20px"><p>"L'éducation est l'investissement le plus rentable qui soit."</p></div>
+    <p class="body-txt" style="margin-top:16px">Chaque diplôme m'a apporté une couche supplémentaire de rigueur analytique, aujourd'hui mise au service de la data.</p>`,
+    ln: '— 7 —', rn: '— 8 —'
+  },
+  // Page 5: Projets
+  {
+    left: `<span class="ch-label">Chapitre IV</span>
+    <h2 class="ch-title">Les Projets</h2>
+    <div class="bproj">
+      <div class="bproj-t">🗄️ SAE 2.01 — Base de données ZiK'Occitanie</div>
+      <div class="bproj-d">BDD relationnelle MySQL complète. MCD/MLD, requêtes SQL avancées, vues, index.</div>
+      <div class="btl-tags"><span class="btag">SQL</span><span class="btag">MySQL</span><span class="btag">Modélisation</span></div>
+    </div>
+    <div class="bproj">
+      <div class="bproj-t">⚡ SAE 2.03 — Prédiction consommation électrique</div>
+      <div class="bproj-d">Régression linéaire & séries temporelles. Python & R. R² satisfaisant.</div>
+      <div class="btl-tags"><span class="btag">Python</span><span class="btag">R</span><span class="btag">Régression</span></div>
+    </div>
+    <div class="bproj">
+      <div class="bproj-t">🔍 SAE 2.02 — Exploration & Visualisation</div>
+      <div class="bproj-d">Analyse exploratoire, tableau de bord synthétique pour non-techniciens.</div>
+      <div class="btl-tags"><span class="btag">R</span><span class="btag">ggplot2</span><span class="btag">Dataviz</span></div>
+    </div>`,
+    right: `<div class="bproj">
+      <div class="bproj-t">🏙️ SAE 1.06 — Enquête Oullins-Pierre-Bénite</div>
+      <div class="bproj-d">439 réponses collectées sur la fusion communale. Présentation aux élus locaux.</div>
+      <div class="btl-tags"><span class="btag">Enquête</span><span class="btag">R</span><span class="btag">Rapport</span></div>
+    </div>
+    <div class="bproj">
+      <div class="bproj-t">📦 PILES — Dashboard Logistique R Shiny</div>
+      <div class="bproj-d">Dashboard interactif Plotly sur ~400 salariés / 10 entreprises. Tests de Wilcoxon.</div>
+      <div class="btl-tags"><span class="btag">R Shiny</span><span class="btag">Plotly</span><span class="btag">Wilcoxon</span></div>
+    </div>
+    <div class="quote" style="margin-top:16px"><p>"Chaque dataset est une histoire à raconter, chaque modèle une hypothèse à tester."</p></div>`,
+    ln: '— 9 —', rn: '— 10 —'
+  },
+  // Page 6: Contact
+  {
+    left: `<span class="ch-label">Chapitre V</span>
+    <h2 class="ch-title">Restons en Contact</h2>
+    <p class="body-txt">Ouvert aux opportunités d'alternance, stage ou collaboration en data analysis.</p>
+    <div class="citem"><span class="cico">✉️</span><div><div class="clabel">Email</div><div class="cval">aristidetchetche6@gmail.com</div></div></div>
+    <div class="citem"><span class="cico">📞</span><div><div class="clabel">Téléphone</div><div class="cval">+33 7 53 00 01 96</div></div></div>
+    <div class="citem"><span class="cico">🐙</span><div><div class="clabel">GitHub</div><div class="cval">github.com/Tcharis</div></div></div>
+    <div class="citem"><span class="cico">📍</span><div><div class="clabel">Localisation</div><div class="cval">Lyon, France</div></div></div>`,
+    right: `<p style="font-size:.78rem;font-weight:700;color:#8b5e2a;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">Au-delà des données</p>
+    <div class="int-grid">
+      <div class="int-item"><span class="int-ico">♟️</span><span class="int-n">Échecs</span></div>
+      <div class="int-item"><span class="int-ico">📚</span><span class="int-n">Lecture</span></div>
+      <div class="int-item"><span class="int-ico">🔬</span><span class="int-n">Sciences</span></div>
+      <div class="int-item"><span class="int-ico">🌍</span><span class="int-n">Voyages</span></div>
+      <div class="int-item"><span class="int-ico">🎵</span><span class="int-n">Musique</span></div>
+      <div class="int-item"><span class="int-ico">💻</span><span class="int-n">Tech</span></div>
+    </div>
+    <div class="quote" style="margin-top:16px"><p>"Les données sont partout. La vraie compétence, c'est de savoir les faire parler."</p></div>`,
+    ln: '— 11 —', rn: '— 12 —'
+  },
+  // Page 7: Épilogue
+  {
+    left: `<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;padding:20px">
+      <div class="cov-orn" style="font-size:2rem">✦</div>
+      <span class="ch-label" style="text-align:center;display:block">Épilogue</span>
+      <p class="epil-q">"Les données sont partout.<br>La vraie compétence,<br>c'est de savoir les faire parler."</p>
+      <div class="cov-div"></div>
+      <p style="font-size:.82rem;color:#9a7a5a;font-style:italic">Le voyage continue — chaque projet est un nouveau chapitre.</p>
+    </div>`,
+    right: `<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;padding:20px">
+      <p class="epil-end">FIN</p>
+      <p class="epil-sub">Merci d'avoir lu<br><em>Les Chroniques d'un Data Analyst</em></p>
+      <div class="cov-orn">❧</div>
+      <a href="index.html" style="font-family:'DM Mono',monospace;font-size:.62rem;color:#8b5e2a;letter-spacing:2px;text-decoration:none;text-transform:uppercase;border:1px solid rgba(139,94,42,.3);padding:8px 16px;border-radius:8px">← Retour à l'accueil</a>
+    </div>`,
+    ln: '— 13 —', rn: '— 14 —'
+  }
+];
+
+let cur = 0;
+const plc = document.getElementById('plc');
+const prc = document.getElementById('prc');
+const pnl = document.getElementById('pnl');
+const pnr = document.getElementById('pnr');
+const spread = document.getElementById('spread');
+const pcount = document.getElementById('pcount');
+
+function render() {
+  const p = PAGES[cur];
+  plc.innerHTML = p.left;
+  prc.innerHTML = p.right;
+  pnl.textContent = p.ln;
+  pnr.textContent = p.rn;
+  pcount.textContent = `${cur+1} / ${PAGES.length}`;
+  document.getElementById('prevBtn').disabled = cur === 0;
+  document.getElementById('nextBtn').disabled = cur === PAGES.length - 1;
+}
+
+function turn(dir) {
+  spread.classList.add('turning');
+  setTimeout(() => {
+    cur += dir;
+    render();
+    spread.classList.remove('turning');
+  }, 250);
+}
+
+function nextPage() { if (cur < PAGES.length-1) turn(1); }
+function prevPage() { if (cur > 0) turn(-1); }
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') nextPage();
+  if (e.key === 'ArrowLeft') prevPage();
+});
+
+// Touch/swipe
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const d = tx - e.changedTouches[0].clientX;
+  if (d > 50) nextPage();
+  if (d < -50) prevPage();
+});
+
+render();
+</script>
+</body>
+</html>

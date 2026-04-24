@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aristide TCHETCHE — Terminal</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d1117;--bg2:#161b22;--b:#30363d;--green:#39ff14;--gd:#3fb950;--blue:#79c0ff;--orange:#ffa657;--white:#e6edf3;--gray:#8b949e;--red:#ff7b72;--purple:#d2a8ff;--cyan:#56d364}
+html,body{height:100%;background:var(--bg);font-family:'JetBrains Mono',monospace;overflow:hidden}
+body{display:flex;flex-direction:column;color:var(--white)}
+
+/* TITLEBAR */
+.tb{background:var(--bg2);border-bottom:1px solid var(--b);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.dot{width:12px;height:12px;border-radius:50%}
+.dr{background:#ff5f57}.dy{background:#ffbd2e}.dg{background:#28c840}
+.tb-label{margin-left:10px;font-size:.72rem;color:var(--gray);letter-spacing:.5px}
+.tb-right{margin-left:auto;font-size:.7rem;color:var(--gray)}
+
+/* TERMINAL */
+#term{flex:1;overflow-y:auto;padding:18px 22px;scroll-behavior:smooth}
+#term::-webkit-scrollbar{width:4px}
+#term::-webkit-scrollbar-thumb{background:var(--b);border-radius:4px}
+
+/* WELCOME */
+.ascii-art{color:var(--green);font-size:.6rem;line-height:1.2;white-space:pre;margin-bottom:14px;opacity:.8}
+.welcome-txt{font-size:.8rem;color:var(--gray);line-height:1.8;margin-bottom:6px}
+.welcome-txt .hl{color:var(--gd)}
+.welcome-txt .cmd{color:var(--orange)}
+
+/* LINES */
+.line{font-size:.82rem;line-height:1.65;margin-bottom:1px}
+.line.prompt-line{color:var(--green)}
+.line.out{color:var(--white);padding-left:2px}
+.line.err{color:var(--red)}
+.line.info{color:var(--blue)}
+.line.success{color:var(--gd)}
+.line.comment{color:var(--gray)}
+.line.section{color:var(--orange);font-weight:600;margin-top:4px}
+.tag-chip{display:inline-block;background:rgba(10,147,150,.15);color:var(--cyan);padding:1px 7px;border-radius:4px;font-size:.72rem;margin:1px 2px}
+.tl-entry{margin:6px 0;padding-left:4px;border-left:2px solid rgba(59,130,246,.3)}
+.tl-title{color:var(--white);font-weight:600;font-size:.83rem}
+.tl-co{color:var(--gray);font-size:.78rem}
+.tl-date{color:var(--blue);font-size:.75rem}
+.box-top{color:var(--blue);font-size:.82rem}
+.box-bot{color:var(--blue);font-size:.82rem}
+
+/* MATRIX CANVAS */
+#matrix{position:fixed;inset:0;z-index:200;display:none;background:#000}
+
+/* INPUT */
+.inp-bar{flex-shrink:0;border-top:1px solid var(--b);background:var(--bg2);padding:10px 22px;display:flex;align-items:center;gap:8px;position:relative}
+.ps{color:var(--green);font-size:.85rem;white-space:nowrap;user-select:none}
+#cmd{flex:1;background:transparent;border:none;outline:none;color:var(--white);font-family:'JetBrains Mono',monospace;font-size:.85rem;caret-color:var(--green)}
+
+/* AUTOCOMPLETE */
+#ac{position:absolute;bottom:100%;left:22px;background:var(--bg2);border:1px solid var(--b);border-radius:8px;overflow:hidden;display:none;z-index:10;min-width:160px;margin-bottom:4px}
+.ac-item{padding:6px 14px;font-size:.78rem;color:var(--gray);cursor:pointer;transition:background .15s}
+.ac-item:hover,.ac-item.sel{background:rgba(59,130,246,.12);color:var(--blue)}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+
+<div class="tb">
+  <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+  <span class="tb-label">aristide@portfolio ~ bash</span>
+  <span class="tb-right">AT · Data Analyst | <a href="index.html" style="color:inherit;text-decoration:none">← Accueil</a></span>
+</div>
+
+<div id="term">
+  <pre class="ascii-art">   _   ______ 
+  /_\  |_   _|  Aristide TCHETCHE
+ / _ \   | |    Data Analyst
+/_/ \_\  |_|    Orange Wholesale France</pre>
+  <div class="welcome-txt">Bienvenue sur le terminal de <span class="hl">Aristide TCHETCHE</span><br>
+Tapez <span class="cmd">help</span> pour voir les commandes · <span style="color:var(--gray)">Tab pour autocompléter · ↑↓ historique</span></div>
+  <br>
+  <div id="output"></div>
+</div>
+
+<div class="inp-bar">
+  <span class="ps">aristide@portfolio:~$&nbsp;</span>
+  <input id="cmd" type="text" autocomplete="off" spellcheck="false" autofocus placeholder="tapez une commande...">
+  <div id="ac"></div>
+</div>
+
+<script>
+const out = document.getElementById('output');
+const inp = document.getElementById('cmd');
+const term = document.getElementById('term');
+const ac = document.getElementById('ac');
+let hist = [], hi = -1, matInt = null;
+let acIdx = -1;
+
+const CMDS = ['help','about','contact','competences','experience','formation','projets','stats','joke','matrix','hack','whoami','clear','exit','echo','ls','date','pwd'];
+
+const DATA = {
+  about:{
+    Nom:'Aristide TCHETCHE',
+    Poste:'Alternant Data Analyst @ Orange Wholesale France',
+    Localisation:'Lyon, Auvergne-Rhône-Alpes',
+    Formation:'BUT Science des Données — IUT Lumière Lyon 2',
+    Langues:'Français · Anglais · Adja',
+    Email:'aristidetchetche6@gmail.com',
+    GitHub:'github.com/Tcharis',
+    Profil:'Curieux, rigoureux et engagé. Chimie → Maths/Info → Data. 2 pays, 7+ exp.'
+  },
+  competences:{
+    'Analyse & BI':['Power BI','Business Objects','LookerStudio','Tableau'],
+    'Langages & Stats':['Python','R','SQL / MySQL','Statistiques inférentielles'],
+    'Dataviz':['R Shiny','ggplot2','Plotly','matplotlib','seaborn'],
+    'Outils':['Excel avancé','Power Query','VBA','SPHINX','Git']
+  },
+  experience:[
+    {p:'⭐ Alternant Data Analyst Finance Partner',c:'Orange Wholesale France · Lyon',d:'sept. 2025 – août 2027',t:['Power BI','Power Query','Business Objects','Python']},
+    {p:'Assistant Chargé d\'Études Marketing',c:'Descours & Cabaud · Lyon',d:'avr. 2025 – mai 2025',t:['SPHINX','Excel','VBA']},
+    {p:'Réceptionniste – Gestion CRM',c:'Hôtel de la Croix Rousse · Lyon',d:'févr. 2023 – juil. 2025',t:['CRM','Communication']},
+    {p:'Responsable Marketing e-Commerce',c:'Softcontrol · Cotonou (remote)',d:'août 2021 – avr. 2025',t:['Facebook Ads','TikTok','KPIs']},
+    {p:'Enquêteur Statistique',c:'IUT Lyon 2 / Mairie d\'Oullins',d:'déc. 2024',t:['R','Python','Statistiques']},
+    {p:'Enseignant de Physique-Chimie',c:'Collège Enseignement Général · Cotonou',d:'sept. 2019 – juil. 2022',t:['Pédagogie','Sciences']}
+  ],
+  formation:[
+    {d:'BUT Science des Données',e:'IUT Lumière Lyon 2',a:'2024–2027',m:'En alternance @ Orange'},
+    {d:'Licence Mathématiques & Informatique',e:'Université Claude Bernard Lyon 1',a:'2023–2024',m:'🏆 11e / 254'},
+    {d:'Licence Chimie',e:'Université d\'Abomey-Calavi, Bénin',a:'2013–2017',m:'🏆 2e / 59'}
+  ],
+  projets:[
+    {n:'SAE 2.01 — BDD ZiK\'Occitanie',d:'MySQL, MCD/MLD, requêtes SQL avancées',t:['SQL','MySQL','Modélisation']},
+    {n:'SAE 2.03 — Prédiction électricité',d:'Régression linéaire, séries temporelles Python & R',t:['Python','R','Régression']},
+    {n:'SAE 2.02 — Exploration & Dataviz',d:'Analyse exploratoire, tableau de bord synthétique',t:['R','ggplot2','Dataviz']},
+    {n:'SAE 1.06 — Enquête Oullins',d:'439 réponses, analyse bivariée, présentation à la mairie',t:['Enquête','R','Rapport']},
+    {n:'PILES — Dashboard R Shiny',d:'~400 salariés / 10 entreprises, tests Wilcoxon, Plotly',t:['R Shiny','Plotly','Wilcoxon']}
+  ],
+  contact:{
+    Email:'aristidetchetche6@gmail.com',
+    Tel:'+33 7 53 00 01 96',
+    GitHub:'github.com/Tcharis',
+    LinkedIn:'linkedin.com/in/aristide-tchetche',
+    Lieu:'Lyon, France'
+  },
+  jokes:[
+    'Un data analyst entre dans un bar. Il commande 1.27 bières en moyenne.',
+    'Pourquoi les stats ne mentent pas ? Parce qu\'elles ne parlent pas à n\'importe qui.',
+    'SELECT * FROM jokes WHERE funny = TRUE; → (0 rows affected)',
+    'Il y a 10 types de data analysts : ceux qui comprennent le binaire et les autres.',
+    'Mon modèle a prédit que cette blague serait drôle. R² = 0.02.',
+    'NaN est une erreur mais aussi un état d\'esprit valide le lundi matin.'
+  ]
+};
+
+function pr(html, cls='out') {
+  const d = document.createElement('div');
+  d.className = `line ${cls}`;
+  d.innerHTML = html;
+  out.appendChild(d);
+  term.scrollTop = term.scrollHeight;
+}
+
+function pPrompt(cmd) {
+  pr(`<span style="color:var(--green)">aristide@portfolio:~$</span> <span style="color:var(--white)">${cmd}</span>`, 'prompt-line');
+}
+
+function chips(arr) {
+  return arr.map(t => `<span class="tag-chip">${t}</span>`).join('');
+}
+
+function run(raw) {
+  const cmd = raw.trim();
+  if (!cmd) return;
+  hist.unshift(cmd); hi = -1;
+  pPrompt(cmd);
+  const [name, ...args] = cmd.split(' ');
+
+  switch(name.toLowerCase()) {
+    case 'help':
+      pr('');
+      pr('<span style="color:var(--blue)">╔══════════════════════════════════════════╗</span>', 'box-top');
+      pr('<span style="color:var(--blue)">║</span>  <span style="color:var(--orange);font-weight:700">COMMANDES DISPONIBLES</span>                     <span style="color:var(--blue)">║</span>');
+      pr('<span style="color:var(--blue)">╠══════════════════════════════════════════╣</span>');
+      [
+        ['about','Profil et informations'],
+        ['competences','Stack technique complet'],
+        ['experience','Parcours professionnel'],
+        ['formation','Formations académiques'],
+        ['projets','Projets académiques'],
+        ['contact','Coordonnées'],
+        ['stats','Statistiques en chiffres'],
+        ['whoami','Qui suis-je ?'],
+        ['joke','Blague data 😄'],
+        ['matrix','Mode Matrix 🟢'],
+        ['hack','Séquence hacking'],
+        ['date','Date actuelle'],
+        ['pwd','Répertoire actuel'],
+        ['ls','Lister les sections'],
+        ['echo <txt>','Afficher un texte'],
+        ['clear','Vider le terminal'],
+        ['exit','Retour à l\'accueil'],
+      ].forEach(([c,d])=>pr(`<span style="color:var(--blue)">║</span>  <span style="color:var(--cyan);display:inline-block;min-width:130px">${c}</span><span style="color:var(--gray)">${d}</span>`));
+      pr('<span style="color:var(--blue)">╚══════════════════════════════════════════╝</span>');
+      pr(''); break;
+
+    case 'about':
+      pr(''); pr('┌─ PROFIL ─────────────────────────────────', 'section');
+      Object.entries(DATA.about).forEach(([k,v]) => {
+        if (k==='Profil') pr(`  <span style="color:var(--gray)">→</span> <em style="color:var(--white)">${v}</em>`);
+        else pr(`  <span style="color:var(--purple)">${k.padEnd(14)}</span> <span style="color:var(--white)">${v}</span>`);
+      });
+      pr('└──────────────────────────────────────────', 'section'); pr(''); break;
+
+    case 'competences':
+      pr(''); pr('┌─ COMPÉTENCES ────────────────────────────', 'section');
+      Object.entries(DATA.competences).forEach(([cat,skills]) => {
+        pr(`  <span style="color:var(--orange)">▶ ${cat}</span>`);
+        pr(`  ${chips(skills)}`); pr('');
+      });
+      pr('└──────────────────────────────────────────', 'section'); break;
+
+    case 'experience':
+      pr(''); pr('┌─ EXPÉRIENCES ────────────────────────────', 'section');
+      DATA.experience.forEach((e,i) => {
+        pr(`  <span style="color:var(--cyan)">[${i+1}]</span> <strong>${e.p}</strong>`);
+        pr(`      <span style="color:var(--gray)">@ ${e.c}</span>`);
+        pr(`      <span style="color:var(--blue)">${e.d}</span>`);
+        pr(`      ${chips(e.t)}`); pr('');
+      });
+      pr('└──────────────────────────────────────────', 'section'); break;
+
+    case 'formation':
+      pr(''); pr('┌─ FORMATION ──────────────────────────────', 'section');
+      DATA.formation.forEach((f,i) => {
+        pr(`  <span style="color:var(--cyan)">[${i+1}]</span> <strong>${f.d}</strong>`);
+        pr(`      <span style="color:var(--gray)">${f.e} · ${f.a}</span>`);
+        if(f.m) pr(`      <span style="color:var(--orange)">${f.m}</span>`); pr('');
+      });
+      pr('└──────────────────────────────────────────', 'section'); break;
+
+    case 'projets':
+      pr(''); pr('┌─ PROJETS ────────────────────────────────', 'section');
+      DATA.projets.forEach((p,i) => {
+        pr(`  <span style="color:var(--cyan)">[${i+1}]</span> <strong>${p.n}</strong>`);
+        pr(`      <span style="color:var(--gray)">${p.d}</span>`);
+        pr(`      ${chips(p.t)}`); pr('');
+      });
+      pr('└──────────────────────────────────────────', 'section'); break;
+
+    case 'contact':
+      pr(''); pr('┌─ CONTACT ────────────────────────────────', 'section');
+      Object.entries(DATA.contact).forEach(([k,v]) => {
+        pr(`  <span style="color:var(--purple)">${k.padEnd(10)}</span> <span style="color:var(--gd)">${v}</span>`);
+      });
+      pr('└──────────────────────────────────────────', 'section'); pr(''); break;
+
+    case 'stats':
+      pr(''); pr('┌─ ARISTIDE EN CHIFFRES ───────────────────', 'section');
+      pr(`  <span style="color:var(--orange)">7+</span>  expériences professionnelles`);
+      pr(`  <span style="color:var(--orange)">2</span>   pays d'activité (Bénin, France)`);
+      pr(`  <span style="color:var(--orange)">5</span>   projets académiques`);
+      pr(`  <span style="color:var(--orange)">3</span>   diplômes universitaires`);
+      pr(`  <span style="color:var(--orange)">11e</span> /254 en Maths/Info (Lyon 1)`);
+      pr(`  <span style="color:var(--orange)">2e</span>  /59 en Chimie (UAC)`);
+      pr(`  <span style="color:var(--orange)">2027</span> diplôme BUT prévu`);
+      pr('└──────────────────────────────────────────', 'section'); pr(''); break;
+
+    case 'whoami':
+      pr(''); pr('  <span style="color:var(--gd)">Aristide TCHETCHE</span> — Data Analyst en devenir.');
+      pr('  Béninois. Lyonnais d\'adoption. Passionné de données.');
+      pr(`  <span style="color:var(--gray)">uid=data gid=analyst groups=orange,iut-lyon2</span>`); pr(''); break;
+
+    case 'joke':
+      pr(''); pr(`  <span style="color:var(--orange)">😄</span> ${DATA.jokes[Math.floor(Math.random()*DATA.jokes.length)]}`); pr(''); break;
+
+    case 'ls':
+      pr(''); pr('  <span style="color:var(--blue)">about/</span>  <span style="color:var(--blue)">competences/</span>  <span style="color:var(--blue)">experience/</span>  <span style="color:var(--blue)">formation/</span>  <span style="color:var(--blue)">projets/</span>  <span style="color:var(--blue)">contact/</span>  <span style="color:var(--blue)">stats/</span>'); pr(''); break;
+
+    case 'date':
+      pr(`  ${new Date().toLocaleString('fr-FR')}`); pr(''); break;
+
+    case 'pwd':
+      pr('  /home/aristide/portfolio'); pr(''); break;
+
+    case 'echo':
+      if(args.length) pr(`  ${args.join(' ')}`); pr(''); break;
+
+    case 'clear':
+      out.innerHTML = ''; break;
+
+    case 'exit':
+      pr('  <span style="color:var(--blue)">Redirection vers l\'accueil...</span>');
+      setTimeout(() => window.location.href='index.html', 700); break;
+
+    case 'matrix':
+      startMatrix(); break;
+
+    case 'hack':
+      hackSeq(); break;
+
+    default:
+      pr(`  <span style="color:var(--red)">bash: ${name}: commande introuvable</span>`);
+      pr('  <span style="color:var(--gray)">Tapez <span style="color:var(--orange)">help</span> pour voir les commandes.</span>'); pr('');
+  }
+}
+
+function hackSeq() {
+  const lines = [
+    [0,'  <span style="color:var(--red)">INITIALISATION PROTOCOLE...</span>'],
+    [500,'  <span style="color:var(--gd)">Connexion à Orange Wholesale France...</span>'],
+    [1100,'  <span style="color:var(--cyan)">Scan KPIs PC2R...</span> <span style="color:var(--green)">████████░░</span> 80%'],
+    [1700,'  <span style="color:var(--cyan)">Extraction Power BI...</span> <span style="color:var(--green)">██████████</span> 100% ✓'],
+    [2300,'  <span style="color:var(--orange)">Déchiffrement données SQL...</span> <span style="color:var(--green)">██████████</span> 100% ✓'],
+    [2900,'  <span style="color:var(--gd)">ACCÈS ACCORDÉ. Bienvenue, analyste.</span>'],
+    [3300,'  <span style="color:var(--gray)">Just kidding — je suis juste très bon en Power Query 😄</span>'],
+  ];
+  lines.forEach(([delay,txt]) => setTimeout(() => pr(txt), delay));
+  setTimeout(() => pr(''), 3700);
+}
+
+function startMatrix() {
+  const canvas = document.getElementById('matrix');
+  canvas.style.display = 'block';
+  canvas.width = innerWidth; canvas.height = innerHeight;
+  const ctx = canvas.getContext('2d');
+  const cols = Math.floor(canvas.width/14);
+  const drops = Array(cols).fill(1);
+  matInt = setInterval(() => {
+    ctx.fillStyle = 'rgba(0,0,0,.05)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#39ff14'; ctx.font = '13px JetBrains Mono';
+    drops.forEach((y,i) => {
+      const ch = String.fromCharCode(0x30A0 + Math.random()*96);
+      ctx.fillText(ch, i*14, y*14);
+      if(y*14 > canvas.height && Math.random()>.975) drops[i]=0;
+      drops[i]++;
+    });
+  }, 33);
+  pr('  <span style="color:var(--green)">Mode Matrix activé — Appuyez sur ÉCHAP pour quitter</span>');
+}
+
+// INPUT
+inp.addEventListener('keydown', e => {
+  if(e.key==='Enter') { run(inp.value); inp.value=''; hideAc(); }
+  else if(e.key==='Escape') {
+    if(matInt) { clearInterval(matInt); document.getElementById('matrix').style.display='none'; matInt=null; }
+    hideAc();
+  }
+  else if(e.key==='ArrowUp') { e.preventDefault(); if(hi<hist.length-1)hi++; inp.value=hist[hi]||''; }
+  else if(e.key==='ArrowDown') { e.preventDefault(); if(hi>0)hi--; else hi=-1; inp.value=hi>=0?hist[hi]:''; }
+  else if(e.key==='Tab') { e.preventDefault();
+    const val=inp.value.toLowerCase();
+    const m=CMDS.filter(c=>c.startsWith(val));
+    if(m.length===1){inp.value=m[0];hideAc();}
+    else if(m.length>1)showAc(m);
+  }
+  else if(e.key==='ArrowDown'&&ac.style.display==='block') {
+    acIdx=Math.min(acIdx+1,ac.children.length-1); updateAcSel();
+  }
+});
+
+inp.addEventListener('input', () => {
+  const val = inp.value.toLowerCase();
+  if(!val){hideAc();return;}
+  const m = CMDS.filter(c=>c.startsWith(val)&&c!==val);
+  if(m.length===0){hideAc();return;}
+  showAc(m.slice(0,6));
+});
+
+function showAc(items) {
+  ac.innerHTML = items.map((m,i)=>`<div class="ac-item" onclick="selAc('${m}')">${m}</div>`).join('');
+  ac.style.display='block'; acIdx=-1;
+}
+function hideAc(){ac.style.display='none';acIdx=-1}
+function selAc(v){inp.value=v;hideAc();inp.focus()}
+function updateAcSel(){
+  [...ac.children].forEach((el,i)=>el.classList.toggle('sel',i===acIdx));
+}
+
+setTimeout(() => run('help'), 200);
+</script>
+</body>
+</html>
