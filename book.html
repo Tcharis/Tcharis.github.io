@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aristide TCHETCHE — Histoire</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --paper: #f5f0e8;
+      --paper-dark: #e8e0ce;
+      --ink: #2c2416;
+      --ink-light: #5c4f3a;
+      --teal: #0a6670;
+      --accent: #c0392b;
+      --gold: #b8860b;
+      --shadow: rgba(44,36,22,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: #2c2416;
+      font-family: 'Crimson Pro', serif;
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* WOOD TEXTURE EFFECT */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        repeating-linear-gradient(92deg, transparent 0px, rgba(255,255,255,0.01) 1px, transparent 2px, transparent 40px),
+        repeating-linear-gradient(2deg, transparent 0px, rgba(0,0,0,0.03) 1px, transparent 2px, transparent 60px),
+        linear-gradient(180deg, #3a2e1e 0%, #2c2416 40%, #1e1810 100%);
+      pointer-events: none;
+    }
+
+    /* NAV BACK */
+    .nav-back {
+      position: fixed; top: 16px; left: 16px; z-index: 100;
+      background: rgba(44,36,22,0.8);
+      border: 1px solid rgba(184,134,11,0.3);
+      color: var(--gold);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+    }
+    .nav-back:hover { background: rgba(184,134,11,0.2); }
+
+    /* PAGE COUNTER NAV */
+    .page-nav {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      z-index: 100;
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(44,36,22,0.9);
+      border: 1px solid rgba(184,134,11,0.3);
+      padding: 8px 20px; border-radius: 100px;
+      backdrop-filter: blur(8px);
+    }
+    .page-nav button {
+      background: none; border: none;
+      color: var(--gold); font-size: 1rem;
+      cursor: pointer; padding: 4px 8px;
+      transition: opacity 0.2s;
+    }
+    .page-nav button:hover { opacity: 0.7; }
+    .page-counter {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem; color: rgba(184,134,11,0.8);
+      letter-spacing: 1px;
+    }
+
+    /* BOOK CONTAINER */
+    .book-container {
+      position: relative; z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 40px 16px 120px;
+    }
+
+    /* PAGE */
+    .page {
+      background: var(--paper);
+      border-radius: 4px;
+      box-shadow:
+        -4px 0 8px rgba(0,0,0,0.3),
+        4px 0 8px rgba(0,0,0,0.2),
+        0 8px 32px rgba(0,0,0,0.4),
+        inset 0 0 60px rgba(184,134,11,0.03);
+      margin-bottom: 0;
+      min-height: 90vh;
+      position: relative;
+      overflow: hidden;
+      display: none;
+    }
+    .page.active { display: block; }
+
+    /* PAGE TEXTURE */
+    .page::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 10% 10%, rgba(255,255,255,0.3) 0%, transparent 40%),
+        radial-gradient(ellipse at 90% 90%, rgba(0,0,0,0.05) 0%, transparent 40%);
+      pointer-events: none;
+    }
+
+    /* LEFT MARGIN LINE */
+    .page::after {
+      content: '';
+      position: absolute;
+      left: 64px; top: 0; bottom: 0;
+      width: 1px;
+      background: rgba(192,57,43,0.15);
+    }
+
+    .page-inner {
+      padding: 60px 56px 80px 80px;
+      min-height: 90vh;
+      display: flex; flex-direction: column;
+    }
+
+    /* PAGE NUMBER */
+    .page-num {
+      position: absolute; bottom: 28px;
+      left: 50%; transform: translateX(-50%);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--ink-light);
+      letter-spacing: 2px;
+    }
+
+    /* COVER PAGE */
+    .cover {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      min-height: 90vh;
+      padding: 60px 40px;
+    }
+
+    .cover-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem; letter-spacing: 4px;
+      color: var(--teal);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .cover h1 {
+      font-family: 'Lora', serif;
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .cover-subtitle {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--ink-light);
+      margin-bottom: 48px;
+    }
+
+    .cover-divider {
+      width: 80px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto 48px;
+    }
+
+    .cover-desc {
+      font-size: 1.05rem;
+      color: var(--ink-light);
+      max-width: 460px;
+      line-height: 1.8;
+      margin-bottom: 40px;
+      font-style: italic;
+    }
+
+    .cover-author {
+      font-family: 'Lora', serif;
+      font-size: 0.95rem;
+      color: var(--teal);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .cover-flourish {
+      font-size: 2rem;
+      margin: 24px 0;
+      color: var(--gold);
+      opacity: 0.5;
+    }
+
+    /* CHAPTER HEADING */
+    .chapter-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem; letter-spacing: 4px;
+      color: var(--teal);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .chapter-title {
+      font-family: 'Lora', serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--paper-dark);
+      position: relative;
+    }
+    .chapter-title::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 60px; height: 2px;
+      background: var(--gold);
+    }
+
+    /* BODY TEXT */
+    .body-text {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+    .body-text strong { color: var(--teal); font-weight: 600; }
+
+    /* DROP CAP */
+    .drop-cap::first-letter {
+      font-family: 'Lora', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      float: left;
+      line-height: 0.8;
+      margin: 4px 8px 0 0;
+      color: var(--teal);
+    }
+
+    /* QUOTE */
+    .pull-quote {
+      border-left: 3px solid var(--gold);
+      padding: 12px 24px;
+      margin: 28px 0;
+      background: rgba(184,134,11,0.05);
+      border-radius: 0 8px 8px 0;
+    }
+    .pull-quote p {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--ink-light);
+      line-height: 1.7;
+    }
+
+    /* SKILLS TABLE */
+    .skills-table { margin: 20px 0; }
+    .skill-category {
+      margin-bottom: 20px;
+    }
+    .skill-cat-title {
+      font-family: 'Lora', serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--teal);
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .skill-cat-title::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: var(--paper-dark);
+    }
+    .skill-pills {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .skill-pill {
+      background: var(--paper-dark);
+      color: var(--ink-light);
+      padding: 3px 12px;
+      border-radius: 100px;
+      font-size: 0.82rem;
+    }
+
+    /* TIMELINE */
+    .timeline { margin: 20px 0; }
+    .tl-item {
+      display: flex; gap: 20px;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: 7px; top: 28px; bottom: -28px;
+      width: 1px;
+      background: var(--paper-dark);
+    }
+    .tl-item:last-child::before { display: none; }
+    .tl-dot {
+      flex-shrink: 0;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--teal);
+      border: 2px solid var(--paper);
+      box-shadow: 0 0 0 2px var(--paper-dark);
+      margin-top: 4px;
+    }
+    .tl-content { flex: 1; }
+    .tl-title {
+      font-family: 'Lora', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .tl-company {
+      font-size: 0.88rem;
+      color: var(--teal);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .tl-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--ink-light);
+      margin-bottom: 8px;
+    }
+    .tl-desc {
+      font-size: 0.92rem;
+      color: var(--ink-light);
+      line-height: 1.6;
+    }
+    .tl-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+    .tl-tag {
+      background: rgba(10,102,112,0.1);
+      color: var(--teal);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    /* PROJECTS */
+    .proj-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--paper-dark);
+    }
+    .proj-item:last-child { border-bottom: none; }
+    .proj-title {
+      font-family: 'Lora', serif;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .proj-desc {
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .proj-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .proj-tag {
+      background: var(--paper-dark);
+      color: var(--ink-light);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    /* EDU ITEMS */
+    .edu-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--paper-dark);
+    }
+    .edu-item:last-child { border-bottom: none; }
+    .edu-title {
+      font-family: 'Lora', serif;
+      font-weight: 700; font-size: 1rem;
+      color: var(--ink); margin-bottom: 2px;
+    }
+    .edu-school { font-size: 0.9rem; color: var(--teal); font-weight: 600; margin-bottom: 2px; }
+    .edu-year { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--ink-light); margin-bottom: 6px; }
+    .edu-mention {
+      display: inline-block;
+      background: rgba(184,134,11,0.12);
+      color: var(--gold);
+      padding: 2px 10px; border-radius: 100px;
+      font-size: 0.75rem; font-weight: 600;
+    }
+
+    /* CONTACT */
+    .contact-list { margin: 20px 0; }
+    .contact-item {
+      display: flex; align-items: flex-start;
+      gap: 16px; margin-bottom: 16px;
+      padding: 14px 16px;
+      background: rgba(10,102,112,0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(10,102,112,0.1);
+    }
+    .contact-icon { font-size: 1.1rem; margin-top: 2px; }
+    .contact-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem; color: var(--teal);
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+    .contact-val { font-size: 0.9rem; color: var(--ink); }
+
+    /* INTERESTS */
+    .interest-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 12px; margin: 20px 0;
+    }
+    .interest-item {
+      text-align: center; padding: 16px 8px;
+      background: rgba(184,134,11,0.06);
+      border-radius: 8px;
+      border: 1px solid rgba(184,134,11,0.15);
+    }
+    .interest-icon { font-size: 1.5rem; margin-bottom: 6px; display: block; }
+    .interest-name { font-size: 0.82rem; color: var(--ink-light); }
+
+    /* EPILOGUE */
+    .epilogue {
+      text-align: center;
+      padding: 40px 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      flex: 1;
+    }
+    .epilogue-quote {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 1.4rem;
+      color: var(--ink-light);
+      max-width: 400px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .the-end {
+      font-family: 'Lora', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-top: 32px;
+    }
+    .end-sub {
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      margin-top: 8px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<a href="index.html" class="nav-back">← Retour</a>
+
+<div class="page-nav">
+  <button onclick="prevPage()">◀</button>
+  <span class="page-counter" id="pageCounter">1 / 8</span>
+  <button onclick="nextPage()">▶</button>
+</div>
+
+<div class="book-container">
+
+  <!-- PAGE 1 : COUVERTURE -->
+  <div class="page active" id="page-1">
+    <div class="page-inner">
+      <div class="cover">
+        <span class="cover-eyebrow">// Portfolio · 2025</span>
+        <div class="cover-flourish">✦</div>
+        <h1>Les Chroniques<br>d'un Data Analyst</h1>
+        <p class="cover-subtitle">De la chimie à la data</p>
+        <div class="cover-divider"></div>
+        <p class="cover-desc">
+          "Ceci est l'histoire d'un scientifique curieux,<br>
+          qui a transformé sa rigueur en insight<br>
+          et ses données en décisions."
+        </p>
+        <div class="cover-flourish">❧</div>
+        <span class="cover-author">— Aristide TCHETCHE</span>
+      </div>
+    </div>
+    <div class="page-num">- 1 -</div>
+  </div>
+
+  <!-- PAGE 2 : PROLOGUE / À PROPOS -->
+  <div class="page" id="page-2">
+    <div class="page-inner">
+      <span class="chapter-num">Prologue</span>
+      <h2 class="chapter-title">Le Commencement</h2>
+
+      <p class="body-text drop-cap">
+        Tout a commencé par une équation chimique. Puis par une série statistique.
+        Puis par une question : <em>et si les données pouvaient raconter quelque chose d'important ?</em>
+      </p>
+
+      <p class="body-text">
+        Je m'appelle <strong>Aristide TCHETCHE</strong>, Data Analyst en alternance chez
+        <strong>Orange Wholesale France</strong> à Lyon. Béninois d'origine, Lyonnais d'adoption,
+        je combine une formation scientifique solide avec une passion pour l'analyse de données.
+      </p>
+
+      <div class="pull-quote">
+        <p>"Curieux, rigoureux et engagé — je transforme les données brutes en décisions éclairées."</p>
+      </div>
+
+      <p class="body-text">
+        Mon parcours est atypique : Licence de Chimie (2e/59), puis Maths/Informatique (11e/254),
+        puis BUT Science des Données. Chaque étape m'a appris à voir le monde avec plus de précision.
+      </p>
+
+      <p class="body-text">
+        <strong>Localisation :</strong> Lyon, Auvergne-Rhône-Alpes<br>
+        <strong>Formation :</strong> BUT Science des Données — IUT Lumière Lyon 2<br>
+        <strong>Langues :</strong> Français, Anglais, Adja<br>
+        <strong>Contact :</strong> aristidetchetche6@gmail.com
+      </p>
+    </div>
+    <div class="page-num">- 2 -</div>
+  </div>
+
+  <!-- PAGE 3 : COMPÉTENCES -->
+  <div class="page" id="page-3">
+    <div class="page-inner">
+      <span class="chapter-num">Chapitre I</span>
+      <h2 class="chapter-title">L'Arsenal Technique</h2>
+
+      <p class="body-text">
+        Au fil des années, j'ai forgé un ensemble d'outils solides — de la modélisation statistique
+        au tableau de bord interactif.
+      </p>
+
+      <div class="skills-table">
+        <div class="skill-category">
+          <div class="skill-cat-title">Analyse & Business Intelligence</div>
+          <div class="skill-pills">
+            <span class="skill-pill">Python</span>
+            <span class="skill-pill">R</span>
+            <span class="skill-pill">SQL / MySQL</span>
+            <span class="skill-pill">Power BI</span>
+            <span class="skill-pill">Business Objects</span>
+            <span class="skill-pill">LookerStudio</span>
+            <span class="skill-pill">Tableau</span>
+          </div>
+        </div>
+        <div class="skill-category">
+          <div class="skill-cat-title">Statistiques & Data Science</div>
+          <div class="skill-pills">
+            <span class="skill-pill">Statistiques descriptives</span>
+            <span class="skill-pill">Régression linéaire</span>
+            <span class="skill-pill">Séries temporelles</span>
+            <span class="skill-pill">R Shiny</span>
+            <span class="skill-pill">ggplot2</span>
+            <span class="skill-pill">Plotly</span>
+            <span class="skill-pill">Inférence statistique</span>
+          </div>
+        </div>
+        <div class="skill-category">
+          <div class="skill-cat-title">Outils & Productivité</div>
+          <div class="skill-pills">
+            <span class="skill-pill">Excel avancé</span>
+            <span class="skill-pill">Power Query</span>
+            <span class="skill-pill">VBA</span>
+            <span class="skill-pill">SPHINX</span>
+            <span class="skill-pill">Git</span>
+            <span class="skill-pill">Canva</span>
+            <span class="skill-pill">CRM</span>
+            <span class="skill-pill">HTML / CSS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pull-quote">
+        <p>"Les données ne mentent pas. Encore faut-il savoir les écouter."</p>
+      </div>
+    </div>
+    <div class="page-num">- 3 -</div>
+  </div>
+
+  <!-- PAGE 4 : EXPÉRIENCE -->
+  <div class="page" id="page-4">
+    <div class="page-inner">
+      <span class="chapter-num">Chapitre II</span>
+      <h2 class="chapter-title">Le Parcours</h2>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--teal)"></div>
+          <div class="tl-content">
+            <div class="tl-title">Alternant Data Analyst Finance Partner ⭐</div>
+            <div class="tl-company">Orange Wholesale France · Lyon</div>
+            <div class="tl-date">sept. 2025 – août 2027</div>
+            <div class="tl-desc">Reporting automatisé, KPIs, analyse des données de facturation au sein du Parcours PC2R (3e pilier d'Orange, +7 Mds€ de CA).</div>
+            <div class="tl-tags"><span class="tl-tag">Power BI</span><span class="tl-tag">Power Query</span><span class="tl-tag">Business Objects</span><span class="tl-tag">Python</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Assistant Chargé d'Études Marketing</div>
+            <div class="tl-company">Descours & Cabaud · Lyon</div>
+            <div class="tl-date">avr. 2025 – mai 2025</div>
+            <div class="tl-desc">Enquêtes marketing via SPHINX, étude du cycle de vie client, automatisation Excel/VBA.</div>
+            <div class="tl-tags"><span class="tl-tag">SPHINX</span><span class="tl-tag">Excel</span><span class="tl-tag">VBA</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Réceptionniste – Gestion Réservations & CRM</div>
+            <div class="tl-company">Hôtel de la Croix Rousse · Lyon</div>
+            <div class="tl-date">févr. 2023 – juil. 2025</div>
+            <div class="tl-desc">Accueil, gestion CRM, fidélisation clientèle, résolution proactive de problèmes.</div>
+            <div class="tl-tags"><span class="tl-tag">CRM</span><span class="tl-tag">Communication</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Responsable Marketing e-Commerce</div>
+            <div class="tl-company">Softcontrol · Cotonou, Bénin (remote)</div>
+            <div class="tl-date">août 2021 – avr. 2025</div>
+            <div class="tl-desc">Pilotage stratégies digitales, Facebook Ads, TikTok, analyse KPIs e-commerce.</div>
+            <div class="tl-tags"><span class="tl-tag">Facebook Ads</span><span class="tl-tag">TikTok</span><span class="tl-tag">Canva</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Enseignant de Physique-Chimie</div>
+            <div class="tl-company">Collège d'Enseignement Général · Cotonou, Bénin</div>
+            <div class="tl-date">sept. 2019 – juil. 2022</div>
+            <div class="tl-desc">Cours, TP, évaluations, suivi pédagogique. Compétences en vulgarisation et communication.</div>
+            <div class="tl-tags"><span class="tl-tag">Pédagogie</span><span class="tl-tag">Sciences</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-num">- 4 -</div>
+  </div>
+
+  <!-- PAGE 5 : FORMATION -->
+  <div class="page" id="page-5">
+    <div class="page-inner">
+      <span class="chapter-num">Chapitre III</span>
+      <h2 class="chapter-title">L'Éducation</h2>
+
+      <p class="body-text">
+        Trois universités. Trois pays de cœur. Un fil conducteur : la rigueur scientifique.
+      </p>
+
+      <div style="margin-top: 28px;">
+        <div class="edu-item">
+          <div class="edu-year">2024 – 2027</div>
+          <div class="edu-title">BUT Science des Données</div>
+          <div class="edu-school">IUT Lumière Lyon 2</div>
+          <p style="font-size:0.88rem; color:var(--ink-light); margin-top:6px;">Analyse, visualisation, bases de données, outils décisionnels, statistiques avancées. En alternance @ Orange.</p>
+        </div>
+
+        <div class="edu-item">
+          <div class="edu-year">2023 – 2024</div>
+          <div class="edu-title">Licence Mathématiques et Informatique</div>
+          <div class="edu-school">Université Claude Bernard Lyon 1</div>
+          <span class="edu-mention">🏆 Classement : 11e / 254</span>
+          <p style="font-size:0.88rem; color:var(--ink-light); margin-top:8px;">C, Python, Scheme, Algèbre linéaire, Analyse mathématique.</p>
+        </div>
+
+        <div class="edu-item">
+          <div class="edu-year">2013 – 2017</div>
+          <div class="edu-title">Licence Chimie</div>
+          <div class="edu-school">Université d'Abomey-Calavi, Bénin</div>
+          <span class="edu-mention">🏆 Classement : 2e / 59</span>
+          <p style="font-size:0.88rem; color:var(--ink-light); margin-top:8px;">Chimie physique, Statistiques, Électronique. Fondations scientifiques solides.</p>
+        </div>
+      </div>
+
+      <div class="pull-quote" style="margin-top: 32px;">
+        <p>"L'éducation est l'investissement le plus rentable qui soit."</p>
+      </div>
+    </div>
+    <div class="page-num">- 5 -</div>
+  </div>
+
+  <!-- PAGE 6 : PROJETS -->
+  <div class="page" id="page-6">
+    <div class="page-inner">
+      <span class="chapter-num">Chapitre IV</span>
+      <h2 class="chapter-title">Les Projets</h2>
+
+      <p class="body-text">
+        Des projets où chaque jeu de données est une histoire à raconter,
+        chaque modèle une hypothèse à tester.
+      </p>
+
+      <div style="margin-top: 20px;">
+        <div class="proj-item">
+          <div class="proj-title">🗄️ SAE 2.01 — Base de données ZiK'Occitanie</div>
+          <div class="proj-desc">Conception et implémentation d'une BDD relationnelle complète pour une plateforme musicale fictive. MCD/MLD, MySQL, requêtes avancées, vues et index.</div>
+          <div class="proj-tags"><span class="proj-tag">SQL</span><span class="proj-tag">MySQL</span><span class="proj-tag">Modélisation</span></div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-title">⚡ SAE 2.03 — Prédiction consommation électrique</div>
+          <div class="proj-desc">Modélisation statistique (régression linéaire, séries temporelles) pour prédire la consommation nationale. R² satisfaisant, impact température démontré.</div>
+          <div class="proj-tags"><span class="proj-tag">Python</span><span class="proj-tag">R</span><span class="proj-tag">Régression</span><span class="proj-tag">Séries temporelles</span></div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-title">🔍 SAE 2.02 — Exploration & Visualisation</div>
+          <div class="proj-desc">Analyse exploratoire de données réelles, tableau de bord synthétique pour communication d'insights à un public non-technique.</div>
+          <div class="proj-tags"><span class="proj-tag">R</span><span class="proj-tag">ggplot2</span><span class="proj-tag">Python</span><span class="proj-tag">Dataviz</span></div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-title">🏙️ SAE 1.06 — Enquête Oullins-Pierre-Bénite</div>
+          <div class="proj-desc">439 réponses collectées sur la fusion communale. Analyse statistique et présentation des résultats devant les élus locaux.</div>
+          <div class="proj-tags"><span class="proj-tag">Enquête terrain</span><span class="proj-tag">R</span><span class="proj-tag">Rapport</span></div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-title">📦 PILES — Dashboard Logistique R Shiny</div>
+          <div class="proj-desc">Dashboard interactif Plotly sur ~400 salariés dans 10 entreprises, tests de Wilcoxon, filtres dynamiques. Projet tutoré IUT.</div>
+          <div class="proj-tags"><span class="proj-tag">R Shiny</span><span class="proj-tag">Plotly</span><span class="proj-tag">Wilcoxon</span><span class="proj-tag">shinydashboard</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="page-num">- 6 -</div>
+  </div>
+
+  <!-- PAGE 7 : CONTACT & INTÉRÊTS -->
+  <div class="page" id="page-7">
+    <div class="page-inner">
+      <span class="chapter-num">Chapitre V</span>
+      <h2 class="chapter-title">Restons en Contact</h2>
+
+      <p class="body-text">
+        Ouvert aux opportunités d'alternance, de stage ou de collaboration en data analysis.
+        N'hésitez pas à me contacter !
+      </p>
+
+      <div class="contact-list">
+        <div class="contact-item">
+          <span class="contact-icon">✉️</span>
+          <div><div class="contact-label">Email</div><div class="contact-val">aristidetchetche6@gmail.com</div></div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">📞</span>
+          <div><div class="contact-label">Téléphone</div><div class="contact-val">+33 7 53 00 01 96</div></div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">🐙</span>
+          <div><div class="contact-label">GitHub</div><div class="contact-val">github.com/Tcharis</div></div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">📍</span>
+          <div><div class="contact-label">Localisation</div><div class="contact-val">Lyon, France</div></div>
+        </div>
+      </div>
+
+      <h3 style="font-family:'Lora',serif; margin: 28px 0 16px; font-size:1rem; color:var(--teal);">Au-delà des données</h3>
+      <div class="interest-grid">
+        <div class="interest-item"><span class="interest-icon">♟️</span><span class="interest-name">Échecs</span></div>
+        <div class="interest-item"><span class="interest-icon">📚</span><span class="interest-name">Lecture</span></div>
+        <div class="interest-item"><span class="interest-icon">🔬</span><span class="interest-name">Sciences</span></div>
+        <div class="interest-item"><span class="interest-icon">🌍</span><span class="interest-name">Voyages</span></div>
+        <div class="interest-item"><span class="interest-icon">🎵</span><span class="interest-name">Musique</span></div>
+        <div class="interest-item"><span class="interest-icon">💻</span><span class="interest-name">Tech</span></div>
+      </div>
+    </div>
+    <div class="page-num">- 7 -</div>
+  </div>
+
+  <!-- PAGE 8 : ÉPILOGUE -->
+  <div class="page" id="page-8">
+    <div class="page-inner">
+      <div class="epilogue">
+        <div class="cover-flourish" style="font-size:2.5rem;">✦</div>
+        <span class="chapter-num" style="text-align:center;display:block">Épilogue</span>
+        <p class="epilogue-quote">
+          "Les données sont partout. La vraie compétence,<br>c'est de savoir les faire parler."
+        </p>
+        <div class="cover-divider"></div>
+        <p style="font-size:0.95rem; color:var(--ink-light); font-style:italic; margin-bottom:32px;">
+          Le voyage continue — chaque projet est un nouveau chapitre.
+        </p>
+        <div class="the-end">FIN</div>
+        <p class="end-sub">Merci d'avoir lu<br><em>Les Chroniques d'un Data Analyst</em></p>
+        <div class="cover-flourish" style="margin-top:32px;">❧</div>
+        <a href="index.html" style="margin-top:24px; font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--teal); letter-spacing:2px; text-decoration:none; text-transform:uppercase;">← Retour à l'accueil</a>
+      </div>
+    </div>
+    <div class="page-num">- 8 -</div>
+  </div>
+
+</div>
+
+<script>
+  let current = 1;
+  const total = 8;
+
+  function showPage(n) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(`page-${n}`).classList.add('active');
+    document.getElementById('pageCounter').textContent = `${n} / ${total}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function nextPage() {
+    if (current < total) { current++; showPage(current); }
+  }
+
+  function prevPage() {
+    if (current > 1) { current--; showPage(current); }
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextPage();
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevPage();
+  });
+
+  // Touch/swipe
+  let touchX = 0;
+  document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const diff = touchX - e.changedTouches[0].clientX;
+    if (diff > 50) nextPage();
+    if (diff < -50) prevPage();
+  });
+</script>
+</body>
+</html>
