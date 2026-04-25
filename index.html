@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aristide TCHETCHE — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#000;font-family:'Outfit',sans-serif}
+canvas{position:fixed;inset:0;z-index:0}
+.wrapper{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.top-label{font-size:.72rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:40px;animation:fadeUp .8s ease .1s both}
+h1{font-size:clamp(2.4rem,5vw,4.2rem);font-weight:900;color:#fff;text-align:center;line-height:1.05;margin-bottom:12px;animation:fadeUp .8s ease .25s both}
+h1 span{background:linear-gradient(135deg,#3b82f6,#8b5cf6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{font-size:1rem;color:rgba(255,255,255,.4);text-align:center;margin-bottom:52px;animation:fadeUp .8s ease .4s both}
+.cards{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;animation:fadeUp .8s ease .55s both}
+.card{position:relative;width:210px;padding:30px 22px 26px;border-radius:20px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);backdrop-filter:blur(20px);cursor:pointer;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:13px;transition:transform .4s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,border-color .3s;overflow:hidden}
+.card::before{content:'';position:absolute;inset:0;border-radius:20px;opacity:0;transition:opacity .4s}
+.card-ui::before{background:radial-gradient(circle at 50% 0%,rgba(59,130,246,.25),transparent 65%)}
+.card-term::before{background:radial-gradient(circle at 50% 0%,rgba(34,197,94,.2),transparent 65%)}
+.card-book::before{background:radial-gradient(circle at 50% 0%,rgba(251,191,36,.2),transparent 65%)}
+.card:hover::before{opacity:1}
+.card-ui:hover{border-color:rgba(59,130,246,.5);box-shadow:0 24px 60px rgba(59,130,246,.2);transform:translateY(-10px) scale(1.02)}
+.card-term:hover{border-color:rgba(34,197,94,.4);box-shadow:0 24px 60px rgba(34,197,94,.15);transform:translateY(-10px) scale(1.02)}
+.card-book:hover{border-color:rgba(251,191,36,.4);box-shadow:0 24px 60px rgba(251,191,36,.15);transform:translateY(-10px) scale(1.02)}
+.card-dash::before{background:radial-gradient(circle at 50% 0%,rgba(0,212,170,.22),transparent 65%)}
+.card-dash:hover{border-color:rgba(0,212,170,.45);box-shadow:0 24px 60px rgba(0,212,170,.18);transform:translateY(-10px) scale(1.02)}
+.card-dash .icon-box{background:rgba(0,212,170,.12)}
+.icon-box{width:58px;height:58px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;transition:transform .3s}
+.card:hover .icon-box{transform:scale(1.15) rotate(-5deg)}
+.card-ui .icon-box{background:rgba(59,130,246,.15)}
+.card-term .icon-box{background:rgba(34,197,94,.1)}
+.card-book .icon-box{background:rgba(251,191,36,.12)}
+.card-name{font-size:1rem;font-weight:700;color:#fff}
+.card-desc{font-size:.73rem;color:rgba(255,255,255,.33);text-align:center;line-height:1.5}
+.card-arr{font-size:1rem;color:rgba(255,255,255,.12);transition:transform .3s,color .3s}
+.card:hover .card-arr{transform:translateX(5px);color:rgba(255,255,255,.5)}
+.hint{position:absolute;bottom:24px;font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.12);animation:fadeUp .8s ease .8s both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.cards{flex-direction:column;align-items:center}.card{width:100%;max-width:280px}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="wrapper">
+  <p class="top-label">Aristide TCHETCHE · Data Analyst</p>
+  <h1>Choisissez votre<br><span>expérience</span></h1>
+  <p class="sub">Quatre façons d'explorer mon univers data</p>
+  <div class="cards">
+    <a href="normal.html" class="card card-ui"><div class="icon-box">🖥️</div><span class="card-name">Interface</span><span class="card-desc">Portfolio moderne &amp; interactif</span><span class="card-arr">→</span></a>
+    <a href="terminal.html" class="card card-term"><div class="icon-box">⌨️</div><span class="card-name">Terminal</span><span class="card-desc">Style CLI — pour les vrais</span><span class="card-arr">→</span></a>
+    <a href="book.html" class="card card-book"><div class="icon-box">📖</div><span class="card-name">Histoire</span><span class="card-desc">Narration immersive</span><span class="card-arr">→</span></a>
+    <a href="dashboard.html" class="card card-dash"><div class="icon-box">📊</div><span class="card-name">Dashboard</span><span class="card-desc">Mon parcours en chiffres</span><span class="card-arr">→</span></a>
+  </div>
+  <p class="hint">Cliquez sur une carte pour commencer</p>
+</div>
+<script>
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+let W,H,pts=[];
+const resize=()=>{W=canvas.width=innerWidth;H=canvas.height=innerHeight;init()};
+const init=()=>{pts=[];const n=Math.floor(W*H/10000);for(let i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,r:Math.random()*1.8+.4})};
+const draw=()=>{
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1});
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+    const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<130){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(80,140,255,${(1-d/130)*.2})`;ctx.lineWidth=.7;ctx.stroke()}
+  }
+  pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(120,180,255,.8)';ctx.fill()});
+  requestAnimationFrame(draw)
+};
+window.addEventListener('resize',resize);resize();draw();
+</script>
+</body>
+</html>
