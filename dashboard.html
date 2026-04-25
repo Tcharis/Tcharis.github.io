@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Aristide TCHETCHE — Data Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c10;
+  --bg2: #0d1117;
+  --bg3: #111820;
+  --card: #0f1621;
+  --border: rgba(255,255,255,.06);
+  --accent: #00d4aa;
+  --accent2: #f59e0b;
+  --accent3: #6366f1;
+  --accent4: #ef4444;
+  --text: #e8edf2;
+  --muted: #6b7a8d;
+  --grid: rgba(0,212,170,.04);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+
+/* Grid de fond */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:44px 44px;
+  pointer-events:none;z-index:0;
+}
+
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(8,12,16,.9);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 clamp(16px,4vw,48px);
+  display:flex;align-items:center;justify-content:space-between;
+  height:56px;
+}
+.nav-logo{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;font-weight:700;letter-spacing:3px;
+  color:var(--accent);text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+}
+.nav-logo::before{
+  content:'';width:8px;height:8px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 12px var(--accent);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.nav-links{display:flex;gap:6px}
+.nav-link{
+  font-size:.72rem;font-weight:500;letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  padding:6px 14px;border-radius:6px;
+  transition:all .2s;border:1px solid transparent;
+}
+.nav-link:hover{color:var(--text);border-color:var(--border);background:var(--card)}
+.nav-link.active{color:var(--accent);background:rgba(0,212,170,.08);border-color:rgba(0,212,170,.2)}
+
+/* HERO */
+.hero{
+  position:relative;z-index:1;
+  padding:clamp(40px,6vh,80px) clamp(16px,4vw,48px) 0;
+  max-width:1400px;margin:0 auto;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;letter-spacing:3px;text-transform:uppercase;
+  color:var(--accent);background:rgba(0,212,170,.08);
+  border:1px solid rgba(0,212,170,.2);
+  padding:6px 14px;border-radius:30px;margin-bottom:20px;
+}
+.hero-tag::before{content:'◈';font-size:.8rem}
+.hero-title{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2.4rem,5vw,5rem);
+  font-weight:700;line-height:1;
+  background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.6) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:8px;
+}
+.hero-sub{
+  font-size:clamp(.85rem,1.5vw,1rem);
+  color:var(--muted);font-weight:400;
+  margin-bottom:32px;
+}
+.hero-sub span{color:var(--accent2);font-weight:600}
+
+/* GRILLE PRINCIPALE */
+.main{
+  position:relative;z-index:1;
+  max-width:1400px;margin:0 auto;
+  padding:clamp(16px,3vw,40px) clamp(16px,4vw,48px) 80px;
+}
+
+/* ── CARTE GÉNÉRIQUE ── */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+  position:relative;
+}
+.card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.025) 0%,transparent 60%);
+  pointer-events:none;
+}
+.card-header{
+  padding:20px 24px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.card-title{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;letter-spacing:3px;text-transform:uppercase;
+  color:var(--muted);
+  display:flex;align-items:center;gap:8px;
+}
+.card-title .dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 8px var(--accent);
+}
+.card-body{padding:20px 24px}
+
+/* ── ROW 0 : KPIs animés ── */
+.row-kpi{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:12px;margin-bottom:16px;
+}
+.kpi-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:20px 20px 16px;
+  position:relative;overflow:hidden;
+  transition:transform .2s,border-color .2s;
+}
+.kpi-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.12)}
+.kpi-card::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:2px;
+  border-radius:0 0 14px 14px;
+}
+.kpi-card.c1::after{background:var(--accent)}
+.kpi-card.c2::after{background:var(--accent2)}
+.kpi-card.c3::after{background:var(--accent3)}
+.kpi-card.c4::after{background:var(--accent4)}
+.kpi-card.c5::after{background:#8b5cf6}
+.kpi-card.c6::after{background:#06b6d4}
+.kpi-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.58rem;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px;
+}
+.kpi-value{
+  font-family:'Fraunces',serif;
+  font-size:2.6rem;font-weight:700;line-height:1;
+  color:var(--text);
+}
+.kpi-value.c1{color:var(--accent)}
+.kpi-value.c2{color:var(--accent2)}
+.kpi-value.c3{color:var(--accent3)}
+.kpi-value.c4{color:var(--accent4)}
+.kpi-value.c5{color:#8b5cf6}
+.kpi-value.c6{color:#06b6d4}
+.kpi-suffix{font-size:1.1rem;font-weight:400;font-family:'Space Grotesk',sans-serif}
+.kpi-sub{
+  font-size:.7rem;color:var(--muted);margin-top:6px;line-height:1.3;
+}
+
+/* ── ROW 1 : Timeline + Notes ── */
+.row1{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;
+}
+
+/* Timeline */
+.timeline{padding:6px 0}
+.tl-item{
+  display:flex;gap:14px;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+  position:relative;
+}
+.tl-item:last-child{border:none}
+.tl-dot{
+  flex-shrink:0;
+  width:10px;height:10px;border-radius:50%;
+  margin-top:4px;
+  box-shadow:0 0 10px currentColor;
+}
+.tl-dot.green{background:var(--accent);color:var(--accent)}
+.tl-dot.amber{background:var(--accent2);color:var(--accent2)}
+.tl-dot.purple{background:var(--accent3);color:var(--accent3)}
+.tl-dot.red{background:var(--accent4);color:var(--accent4)}
+.tl-dot.blue{background:#06b6d4;color:#06b6d4}
+.tl-dot.gray{background:var(--muted);color:var(--muted)}
+.tl-content{}
+.tl-date{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.58rem;color:var(--muted);letter-spacing:1px;margin-bottom:2px;
+}
+.tl-role{font-size:.82rem;font-weight:600;color:var(--text);margin-bottom:1px}
+.tl-org{font-size:.75rem;color:var(--muted)}
+.tl-tag{
+  display:inline-block;font-size:.58rem;padding:2px 7px;
+  border-radius:4px;margin-top:4px;font-weight:600;
+  background:rgba(0,212,170,.1);color:var(--accent);
+  border:1px solid rgba(0,212,170,.2);
+}
+.tl-tag.amber{background:rgba(245,158,11,.1);color:var(--accent2);border-color:rgba(245,158,11,.2)}
+.tl-tag.purple{background:rgba(99,102,241,.1);color:var(--accent3);border-color:rgba(99,102,241,.2)}
+
+/* Radar / Notes */
+.notes-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+}
+.note-item{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:10px;padding:14px 14px 12px;
+  display:flex;flex-direction:column;gap:6px;
+}
+.note-subject{
+  font-size:.68rem;font-weight:600;color:var(--muted);
+  font-family:'JetBrains Mono',monospace;letter-spacing:1px;
+}
+.note-score{
+  font-family:'Fraunces',serif;
+  font-size:1.6rem;font-weight:700;line-height:1;
+}
+.note-bar{
+  height:3px;border-radius:2px;
+  background:rgba(255,255,255,.08);overflow:hidden;
+}
+.note-fill{
+  height:100%;border-radius:2px;
+  transition:width 1.5s cubic-bezier(.25,.46,.45,.94);
+  width:0;
+}
+.note-fill.green{background:linear-gradient(90deg,var(--accent),#22c55e)}
+.note-fill.amber{background:linear-gradient(90deg,var(--accent2),#f97316)}
+.note-fill.purple{background:linear-gradient(90deg,var(--accent3),#8b5cf6)}
+.note-fill.red{background:linear-gradient(90deg,var(--accent4),#f97316)}
+
+/* ── ROW 2 : Compétences bar chart + Candidatures ── */
+.row2{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;
+}
+
+/* Barres horizontales */
+.skill-bar{margin-bottom:12px}
+.skill-bar:last-child{margin-bottom:0}
+.skill-top{
+  display:flex;justify-content:space-between;
+  margin-bottom:5px;
+}
+.skill-name{font-size:.78rem;font-weight:500;color:var(--text)}
+.skill-pct{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;color:var(--muted);
+}
+.skill-track{
+  height:6px;border-radius:3px;
+  background:rgba(255,255,255,.06);overflow:hidden;
+}
+.skill-fill{
+  height:100%;border-radius:3px;
+  transition:width 1.8s cubic-bezier(.25,.46,.45,.94);
+  width:0;
+}
+
+/* Candidatures donut */
+.donut-wrap{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;padding:8px 0;
+}
+.donut-svg{filter:drop-shadow(0 0 20px rgba(0,212,170,.15))}
+.donut-legend{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  width:100%;
+}
+.legend-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:8px;
+  background:var(--bg3);
+}
+.legend-dot{
+  width:8px;height:8px;border-radius:2px;flex-shrink:0;
+}
+.legend-text{flex:1}
+.legend-label{font-size:.65rem;color:var(--muted);display:block}
+.legend-count{font-size:.88rem;font-weight:600;color:var(--text)}
+
+/* ── ROW 3 : Impact chiffres + Outils ── */
+.row3{
+  display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px;
+}
+
+/* Impact timeline / big numbers */
+.impact-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+}
+.impact-item{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:10px;padding:16px 14px;
+  text-align:center;
+  transition:transform .2s;
+}
+.impact-item:hover{transform:translateY(-2px)}
+.impact-num{
+  font-family:'Fraunces',serif;
+  font-size:1.8rem;font-weight:700;line-height:1;
+  margin-bottom:4px;
+}
+.impact-desc{
+  font-size:.65rem;color:var(--muted);line-height:1.4;
+}
+
+/* Outils bubbles */
+.tools-cloud{
+  display:flex;flex-wrap:wrap;gap:6px;
+  align-content:flex-start;
+}
+.tool-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:.68rem;font-weight:600;
+  padding:5px 11px;border-radius:30px;
+  border:1px solid;
+  transition:all .2s;cursor:default;
+}
+.tool-chip:hover{transform:translateY(-1px);filter:brightness(1.15)}
+.tool-chip.t1{color:var(--accent);background:rgba(0,212,170,.08);border-color:rgba(0,212,170,.2)}
+.tool-chip.t2{color:var(--accent2);background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2)}
+.tool-chip.t3{color:var(--accent3);background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.2)}
+.tool-chip.t4{color:#06b6d4;background:rgba(6,182,212,.08);border-color:rgba(6,182,212,.2)}
+.tool-chip.t5{color:#8b5cf6;background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.2)}
+.tool-chip::before{content:'●';font-size:.45rem}
+
+/* ── ROW 4 : Candidatures prioritaires ── */
+.row4{margin-bottom:12px}
+.cand-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:8px;
+}
+.cand-card{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;
+  display:flex;align-items:flex-start;gap:12px;
+  transition:all .2s;
+}
+.cand-card:hover{border-color:rgba(255,255,255,.1);background:var(--card)}
+.cand-priority{
+  flex-shrink:0;
+  width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;
+  font-family:'JetBrains Mono',monospace;
+}
+.cand-priority.p1{background:rgba(239,68,68,.12);color:var(--accent4);border:1px solid rgba(239,68,68,.25)}
+.cand-priority.p2{background:rgba(245,158,11,.1);color:var(--accent2);border:1px solid rgba(245,158,11,.2)}
+.cand-priority.p3{background:rgba(99,102,241,.1);color:var(--accent3);border:1px solid rgba(99,102,241,.2)}
+.cand-info{}
+.cand-name{font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:2px}
+.cand-type{font-size:.66rem;color:var(--muted)}
+.cand-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.cand-tag{
+  font-size:.58rem;padding:2px 6px;border-radius:4px;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.5px;
+  background:rgba(255,255,255,.05);color:var(--muted);
+  border:1px solid var(--border);
+}
+.cand-tag.alt{background:rgba(0,212,170,.08);color:var(--accent);border-color:rgba(0,212,170,.15)}
+.cand-tag.hot{background:rgba(239,68,68,.08);color:var(--accent4);border-color:rgba(239,68,68,.15)}
+
+/* ── ROW 5 : Chart notes semestres ── */
+.row5{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+
+/* Bars chart semestres */
+.sem-chart{
+  display:flex;align-items:flex-end;gap:10px;
+  height:140px;padding-top:16px;
+}
+.sem-bar-wrap{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.sem-bar{
+  width:100%;border-radius:6px 6px 0 0;
+  transition:height 1.5s cubic-bezier(.25,.46,.45,.94);
+  height:0;
+  position:relative;
+  min-width:40px;
+}
+.sem-bar::after{
+  content:attr(data-val);
+  position:absolute;top:-22px;left:50%;transform:translateX(-50%);
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;font-weight:700;
+  white-space:nowrap;
+}
+.sem-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.58rem;color:var(--muted);text-align:center;
+  letter-spacing:1px;
+}
+
+/* Langages radar simulé avec barres */
+.lang-item{margin-bottom:14px}
+.lang-item:last-child{margin-bottom:0}
+.lang-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.lang-name{font-size:.8rem;font-weight:600}
+.lang-level{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;color:var(--muted);
+  background:var(--bg3);border:1px solid var(--border);
+  padding:2px 7px;border-radius:4px;
+}
+.lang-bar{
+  height:5px;border-radius:3px;
+  background:rgba(255,255,255,.06);overflow:hidden;
+}
+.lang-fill{
+  height:100%;border-radius:3px;
+  transition:width 2s cubic-bezier(.25,.46,.45,.94);
+  width:0;
+}
+
+/* FOOTER */
+footer{
+  position:relative;z-index:1;
+  border-top:1px solid var(--border);
+  padding:24px clamp(16px,4vw,48px);
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:12px;
+}
+.footer-sig{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;color:var(--muted);
+  letter-spacing:2px;
+}
+.footer-sig span{color:var(--accent)}
+.footer-links{display:flex;gap:16px}
+.footer-link{
+  font-size:.7rem;color:var(--muted);
+  text-decoration:none;
+  transition:color .2s;
+}
+.footer-link:hover{color:var(--text)}
+
+/* ANIMATIONS */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.anim{
+  opacity:0;
+  animation:fadeUp .6s ease forwards;
+}
+.anim[data-delay="1"]{animation-delay:.1s}
+.anim[data-delay="2"]{animation-delay:.2s}
+.anim[data-delay="3"]{animation-delay:.3s}
+.anim[data-delay="4"]{animation-delay:.4s}
+.anim[data-delay="5"]{animation-delay:.5s}
+.anim[data-delay="6"]{animation-delay:.6s}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.18)}
+
+/* Responsive */
+@media(max-width:900px){
+  .row1,.row2,.row3,.row5{grid-template-columns:1fr}
+  .impact-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .row-kpi{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Aristide TCHETCHE — Data Dashboard</div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Accueil</a>
+    <a href="normal.html" class="nav-link">Interface</a>
+    <a href="terminal.html" class="nav-link">Terminal</a>
+    <a href="book.html" class="nav-link">Livre</a>
+    <a href="dashboard.html" class="nav-link active">Dashboard</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag anim" data-delay="1">Data Portfolio · 2025</div>
+  <h1 class="hero-title anim" data-delay="2">Mon Parcours<br>en Chiffres</h1>
+  <p class="hero-sub anim" data-delay="3">
+    Data Analyst chez <span>Orange Wholesale France</span> · 
+    BUT Science des Données · IUT Lumière Lyon 2
+  </p>
+</div>
+
+<div class="main">
+
+  <!-- KPIs -->
+  <div class="row-kpi anim" data-delay="2">
+    <div class="kpi-card c1">
+      <div class="kpi-label">Rang L1 Maths/Info</div>
+      <div class="kpi-value c1"><span class="counter" data-target="11">0</span><span class="kpi-suffix">e</span></div>
+      <div class="kpi-sub">sur 254 étudiants · Lyon 1 · 2023-2024</div>
+    </div>
+    <div class="kpi-card c2">
+      <div class="kpi-label">Note Algèbre L1</div>
+      <div class="kpi-value c2"><span class="counter" data-target="19" data-decimal="true">0</span><span class="kpi-suffix">/20</span></div>
+      <div class="kpi-sub">Algèbre 2 · Meilleure note du cursus</div>
+    </div>
+    <div class="kpi-card c3">
+      <div class="kpi-label">Lignes traitées VBA</div>
+      <div class="kpi-value c3"><span class="counter" data-target="1800">0</span></div>
+      <div class="kpi-sub">Réduction 5 596 → 1 800 lignes chez D&amp;C</div>
+    </div>
+    <div class="kpi-card c4">
+      <div class="kpi-label">CA supervisé</div>
+      <div class="kpi-value c4"><span class="counter" data-target="7">0</span><span class="kpi-suffix">Mds€</span></div>
+      <div class="kpi-sub">Périmètre PC2R · Orange Wholesale France</div>
+    </div>
+    <div class="kpi-card c5">
+      <div class="kpi-label">Note soutenance stage</div>
+      <div class="kpi-value c5"><span class="counter" data-target="18">0</span><span class="kpi-suffix">/20</span></div>
+      <div class="kpi-sub">Descours &amp; Cabaud · Mai 2025</div>
+    </div>
+    <div class="kpi-card c1">
+      <div class="kpi-label">Major de promo · UE2</div>
+      <div class="kpi-value c1">🥇</div>
+      <div class="kpi-sub">1re année BUT SD · IUT Lumière Lyon 2 · Toute l'année</div>
+    </div>
+  </div>
+
+  <!-- Row 1 : Timeline + Notes -->
+  <div class="row1">
+
+    <div class="card anim" data-delay="3">
+      <div class="card-header">
+        <span class="card-title"><span class="dot"></span>Parcours chronologique</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted)">2013 → 2027</span>
+      </div>
+      <div class="card-body">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot green"></div>
+            <div class="tl-content">
+              <div class="tl-date">SEPT. 2025 → AOÛT 2027</div>
+              <div class="tl-role">Alternant Data Analyst Finance Partner</div>
+              <div class="tl-org">Orange Wholesale France · Lyon</div>
+              <span class="tl-tag">PC2R · +7 Mds€ CA · Power BI</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot amber"></div>
+            <div class="tl-content">
+              <div class="tl-date">SEPT. 2024 → PRÉSENT</div>
+              <div class="tl-role">BUT Science des Données — parcours EMS</div>
+              <div class="tl-org">IUT Lumière Lyon 2 · Bron</div>
+              <span class="tl-tag amber">S2: 15,88/20 · S3: 14,43/20</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot purple"></div>
+            <div class="tl-content">
+              <div class="tl-date">AVR. → MAI 2025</div>
+              <div class="tl-role">Assistant Chargé d'Études Marketing</div>
+              <div class="tl-org">Descours &amp; Cabaud · Lyon</div>
+              <span class="tl-tag purple">Stage · 7 semaines · 18/20</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot blue" style="background:#06b6d4;color:#06b6d4"></div>
+            <div class="tl-content">
+              <div class="tl-date">2023 → 2024</div>
+              <div class="tl-role">L1 Portail Maths &amp; Informatique</div>
+              <div class="tl-org">Université Claude Bernard Lyon 1</div>
+              <span class="tl-tag" style="background:rgba(6,182,212,.1);color:#06b6d4;border-color:rgba(6,182,212,.2)">15,40/20 · Rang 11/254</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot gray"></div>
+            <div class="tl-content">
+              <div class="tl-date">2019 → 2022</div>
+              <div class="tl-role">Enseignant Physique-Chimie</div>
+              <div class="tl-org">Cotonou, Bénin</div>
+              <span class="tl-tag" style="background:rgba(107,122,141,.1);color:var(--muted);border-color:rgba(107,122,141,.2)">3 ans · Pédagogie · Sciences</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot gray"></div>
+            <div class="tl-content">
+              <div class="tl-date">2013 → 2017</div>
+              <div class="tl-role">Licence Chimie</div>
+              <div class="tl-org">Université d'Abomey-Calavi · Bénin</div>
+              <span class="tl-tag" style="background:rgba(107,122,141,.1);color:var(--muted);border-color:rgba(107,122,141,.2)">Rang 2/59 · Socle scientifique</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card anim" data-delay="4">
+      <div class="card-header">
+        <span class="card-title"><span class="dot" style="background:var(--accent2);box-shadow:0 0 8px var(--accent2)"></span>Notes clés</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted)">/20</span>
+      </div>
+      <div class="card-body">
+        <div class="notes-grid">
+          <div class="note-item">
+            <span class="note-subject">Algèbre 2 · L1</span>
+            <span class="note-score" style="color:var(--accent)">19<span style="font-size:.9rem;font-weight:400;color:var(--muted)">/20</span></span>
+            <div class="note-bar"><div class="note-fill green" data-width="95"></div></div>
+          </div>
+          <div class="note-item">
+            <span class="note-subject">Prog. Stat. · BUT</span>
+            <span class="note-score" style="color:var(--accent2)">18,65<span style="font-size:.9rem;font-weight:400;color:var(--muted)">/20</span></span>
+            <div class="note-bar"><div class="note-fill amber" data-width="93"></div></div>
+          </div>
+          <div class="note-item">
+            <span class="note-subject">Algo récursive · L1</span>
+            <span class="note-score" style="color:var(--accent3)">17,57<span style="font-size:.9rem;font-weight:400;color:var(--muted)">/20</span></span>
+            <div class="note-bar"><div class="note-fill purple" data-width="88"></div></div>
+          </div>
+          <div class="note-item">
+            <span class="note-subject">Analyse 1 info · L1</span>
+            <span class="note-score" style="color:#06b6d4">19<span style="font-size:.9rem;font-weight:400;color:var(--muted)">/20</span></span>
+            <div class="note-bar"><div class="note-fill" style="background:linear-gradient(90deg,#06b6d4,#0ea5e9)" data-width="95"></div></div>
+          </div>
+          <div class="note-item">
+            <span class="note-subject">Moy. S2 BUT</span>
+            <span class="note-score" style="color:var(--accent)">15,88<span style="font-size:.9rem;font-weight:400;color:var(--muted)">/20</span></span>
+            <div class="note-bar"><div class="note-fill green" data-width="79"></div></div>
+          </div>
+          <div class="note-item">
+            <span class="note-subject">Éval. entrep. S4</span>
+            <span class="note-score" style="color:var(--accent2)">16,5<span style="font-size:.9rem;font-weight:400;color:var(--muted)">/20</span></span>
+            <div class="note-bar"><div class="note-fill amber" data-width="82"></div></div>
+          </div>
+          <div class="note-item">
+            <span class="note-subject">Moy. L1 · Lyon 1</span>
+            <span class="note-score" style="color:var(--accent)">15,40<span style="font-size:.9rem;font-weight:400;color:var(--muted)">/20</span></span>
+            <div class="note-bar"><div class="note-fill green" data-width="77"></div></div>
+          </div>
+          <div class="note-item">
+            <span class="note-subject">Stage · Soutenance</span>
+            <span class="note-score" style="color:#8b5cf6">18<span style="font-size:.9rem;font-weight:400;color:var(--muted)">/20</span></span>
+            <div class="note-bar"><div class="note-fill" style="background:linear-gradient(90deg,#8b5cf6,#6366f1)" data-width="90"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2 : Compétences + Candidatures donut -->
+  <div class="row2">
+
+    <div class="card anim" data-delay="3">
+      <div class="card-header">
+        <span class="card-title"><span class="dot" style="background:var(--accent3);box-shadow:0 0 8px var(--accent3)"></span>Maîtrise outils & langages</span>
+      </div>
+      <div class="card-body">
+        <div class="skill-bar">
+          <div class="skill-top"><span class="skill-name">Power BI</span><span class="skill-pct">92%</span></div>
+          <div class="skill-track"><div class="skill-fill" style="background:linear-gradient(90deg,var(--accent),#22c55e)" data-width="92"></div></div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-top"><span class="skill-name">Power Query / Power Pivot</span><span class="skill-pct">90%</span></div>
+          <div class="skill-track"><div class="skill-fill" style="background:linear-gradient(90deg,var(--accent),#22c55e)" data-width="90"></div></div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-top"><span class="skill-name">Excel avancé + VBA</span><span class="skill-pct">88%</span></div>
+          <div class="skill-track"><div class="skill-fill" style="background:linear-gradient(90deg,var(--accent2),#f97316)" data-width="88"></div></div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-top"><span class="skill-name">SQL / MySQL</span><span class="skill-pct">85%</span></div>
+          <div class="skill-track"><div class="skill-fill" style="background:linear-gradient(90deg,var(--accent2),#f97316)" data-width="85"></div></div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-top"><span class="skill-name">Python</span><span class="skill-pct">78%</span></div>
+          <div class="skill-track"><div class="skill-fill" style="background:linear-gradient(90deg,var(--accent3),#8b5cf6)" data-width="78"></div></div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-top"><span class="skill-name">R / R Shiny / ggplot2</span><span class="skill-pct">75%</span></div>
+          <div class="skill-track"><div class="skill-fill" style="background:linear-gradient(90deg,var(--accent3),#8b5cf6)" data-width="75"></div></div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-top"><span class="skill-name">Business Objects / LookerStudio</span><span class="skill-pct">80%</span></div>
+          <div class="skill-track"><div class="skill-fill" style="background:linear-gradient(90deg,#06b6d4,#0ea5e9)" data-width="80"></div></div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-top"><span class="skill-name">SPHINX / Enquêtes statistiques</span><span class="skill-pct">82%</span></div>
+          <div class="skill-track"><div class="skill-fill" style="background:linear-gradient(90deg,#06b6d4,#0ea5e9)" data-width="82"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card anim" data-delay="4">
+      <div class="card-header">
+        <span class="card-title"><span class="dot" style="background:var(--accent2);box-shadow:0 0 8px var(--accent2)"></span>Candidatures 2027</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted)">51 formations</span>
+      </div>
+      <div class="card-body">
+        <div class="donut-wrap">
+          <svg class="donut-svg" width="180" height="180" viewBox="0 0 180 180" id="donut-chart">
+            <!-- Cercle de base -->
+            <circle cx="90" cy="90" r="70" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="22"/>
+            <!-- Segments animés -->
+            <circle id="d1" cx="90" cy="90" r="70" fill="none" stroke="#ef4444" stroke-width="22" stroke-dasharray="0 440" stroke-dashoffset="110" stroke-linecap="round" style="transition:stroke-dasharray 1.5s ease"/>
+            <circle id="d2" cx="90" cy="90" r="70" fill="none" stroke="#f59e0b" stroke-width="22" stroke-dasharray="0 440" stroke-linecap="round" style="transition:stroke-dasharray 1.8s ease"/>
+            <circle id="d3" cx="90" cy="90" r="70" fill="none" stroke="#6366f1" stroke-width="22" stroke-dasharray="0 440" stroke-linecap="round" style="transition:stroke-dasharray 2s ease"/>
+            <circle id="d4" cx="90" cy="90" r="70" fill="none" stroke="#6b7a8d" stroke-width="22" stroke-dasharray="0 440" stroke-linecap="round" style="transition:stroke-dasharray 2.2s ease"/>
+            <!-- Centre -->
+            <text x="90" y="86" text-anchor="middle" fill="white" font-family="Fraunces,serif" font-size="28" font-weight="700">51</text>
+            <text x="90" y="102" text-anchor="middle" fill="#6b7a8d" font-family="JetBrains Mono" font-size="9" letter-spacing="2">FORMATIONS</text>
+          </svg>
+          <div class="donut-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#ef4444"></div>
+              <div class="legend-text">
+                <span class="legend-label">🔥 PRIORITÉ 1</span>
+                <span class="legend-count">7 formations</span>
+              </div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#f59e0b"></div>
+              <div class="legend-text">
+                <span class="legend-label">⭐ PRIORITÉ 2</span>
+                <span class="legend-count">16 formations</span>
+              </div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#6366f1"></div>
+              <div class="legend-text">
+                <span class="legend-label">📌 PRIORITÉ 3</span>
+                <span class="legend-count">22 formations</span>
+              </div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#6b7a8d"></div>
+              <div class="legend-text">
+                <span class="legend-label">🔭 Exploration</span>
+                <span class="legend-count">6 formations</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 3 : Impact + Outils -->
+  <div class="row3">
+
+    <div class="card anim" data-delay="3">
+      <div class="card-header">
+        <span class="card-title"><span class="dot" style="background:var(--accent4);box-shadow:0 0 8px var(--accent4)"></span>Réalisations à impact</span>
+      </div>
+      <div class="card-body">
+        <div class="impact-grid">
+          <div class="impact-item">
+            <div class="impact-num" style="color:var(--accent)">1,3M+</div>
+            <div class="impact-desc">lignes traitées<br>Power Query + Power Pivot</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-num" style="color:var(--accent2)">5596→1800</div>
+            <div class="impact-desc">lignes nettoyées<br>via script VBA automatisé</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-num" style="color:var(--accent3)">495→7</div>
+            <div class="impact-desc">colonnes optimisées<br>Descours &amp; Cabaud 2025</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-num" style="color:#06b6d4">220</div>
+            <div class="impact-desc">QR codes générés<br>enquêtes à chaud magasins</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-num" style="color:#8b5cf6">439</div>
+            <div class="impact-desc">réponses terrain<br>Enquête Oullins-Pierre-Bénite</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-num" style="color:var(--accent4)">400+</div>
+            <div class="impact-desc">salariés analysés<br>Dashboard R Shiny PILES</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card anim" data-delay="4">
+      <div class="card-header">
+        <span class="card-title"><span class="dot" style="background:#8b5cf6;box-shadow:0 0 8px #8b5cf6"></span>Stack technologique</span>
+      </div>
+      <div class="card-body">
+        <div class="tools-cloud">
+          <span class="tool-chip t1">Power BI</span>
+          <span class="tool-chip t1">Power Query</span>
+          <span class="tool-chip t1">Power Pivot</span>
+          <span class="tool-chip t1">Business Objects</span>
+          <span class="tool-chip t2">Python</span>
+          <span class="tool-chip t2">R</span>
+          <span class="tool-chip t2">SQL</span>
+          <span class="tool-chip t2">MySQL</span>
+          <span class="tool-chip t3">R Shiny</span>
+          <span class="tool-chip t3">ggplot2</span>
+          <span class="tool-chip t3">Plotly</span>
+          <span class="tool-chip t3">matplotlib</span>
+          <span class="tool-chip t4">Excel avancé</span>
+          <span class="tool-chip t4">VBA</span>
+          <span class="tool-chip t4">SPHINX</span>
+          <span class="tool-chip t4">LookerStudio</span>
+          <span class="tool-chip t5">Git</span>
+          <span class="tool-chip t5">Looping</span>
+          <span class="tool-chip t5">Tableau</span>
+          <span class="tool-chip t5">Canva</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 4 supprimée -->
+  <div class="card row4 anim" data-delay="3" style="display:none">
+    <div class="card-header">
+      <span class="card-title"><span class="dot" style="background:var(--accent4);box-shadow:0 0 8px var(--accent4)"></span>Formations prioritaires · Rentrée 2027</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted)">Top 7 · 🔥 Priorité 1</span>
+    </div>
+    <div class="card-body">
+      <div class="cand-grid">
+        <div class="cand-card">
+          <div class="cand-priority p1">P1</div>
+          <div class="cand-info">
+            <div class="cand-name">ESIEA — Majeure Data Science & IA</div>
+            <div class="cand-type">École ingénieur CTI · Paris / Laval / Agen</div>
+            <div class="cand-tags">
+              <span class="cand-tag alt">Full alternance</span>
+              <span class="cand-tag hot">Ouvert nov. 2026</span>
+              <span class="cand-tag">Gratuit</span>
+            </div>
+          </div>
+        </div>
+        <div class="cand-card">
+          <div class="cand-priority p1">P1</div>
+          <div class="cand-info">
+            <div class="cand-name">EPITA — Majeure Data Science</div>
+            <div class="cand-type">École ingénieur CTI · Paris / Lyon / Rennes</div>
+            <div class="cand-tags">
+              <span class="cand-tag alt">Full alternance</span>
+              <span class="cand-tag hot">Épreuves à préparer</span>
+              <span class="cand-tag">Gratuit</span>
+            </div>
+          </div>
+        </div>
+        <div class="cand-card">
+          <div class="cand-priority p1">P1</div>
+          <div class="cand-info">
+            <div class="cand-name">ESILV — MSc CS & Data Science</div>
+            <div class="cand-type">École ingénieur CTI · Paris / Nantes</div>
+            <div class="cand-tags">
+              <span class="cand-tag alt">2 ans alternance</span>
+              <span class="cand-tag hot">Nov. 2026</span>
+              <span class="cand-tag">Gratuit</span>
+            </div>
+          </div>
+        </div>
+        <div class="cand-card">
+          <div class="cand-priority p1">P1</div>
+          <div class="cand-info">
+            <div class="cand-name">M1 Info FA → M2 MALIA · Lyon 2 ICOM</div>
+            <div class="cand-type">Master 100% alternance · Lyon</div>
+            <div class="cand-tags">
+              <span class="cand-tag alt">100% alternance</span>
+              <span class="cand-tag hot">Promesse d'embauche obligatoire</span>
+            </div>
+          </div>
+        </div>
+        <div class="cand-card">
+          <div class="cand-priority p1">P1</div>
+          <div class="cand-info">
+            <div class="cand-name">Master Science des Données · UBS Vannes</div>
+            <div class="cand-type">Master 100% alternance · Vannes</div>
+            <div class="cand-tags">
+              <span class="cand-tag alt">100% alternance</span>
+              <span class="cand-tag">BUT SD accepté</span>
+            </div>
+          </div>
+        </div>
+        <div class="cand-card">
+          <div class="cand-priority p1">P1</div>
+          <div class="cand-info">
+            <div class="cand-name">Diplôme ingénieur Data/IA · Cnam</div>
+            <div class="cand-type">CTI · 100% apprentissage · Niort + distanciel</div>
+            <div class="cand-tags">
+              <span class="cand-tag alt">100% apprentissage</span>
+              <span class="cand-tag hot">Très accessible</span>
+            </div>
+          </div>
+        </div>
+        <div class="cand-card">
+          <div class="cand-priority p1">P1</div>
+          <div class="cand-info">
+            <div class="cand-name">ENSAR — Ingénieur Science de la donnée</div>
+            <div class="cand-type">École ingénieur CTI · Public</div>
+            <div class="cand-tags">
+              <span class="cand-tag hot">À contacter urgent</span>
+              <span class="cand-tag">Profil très aligné</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div><!-- .main -->
+
+<footer>
+  <span class="footer-sig">ARISTIDE TCHETCHE · <span>DATA ANALYST</span> · IUT LUMIÈRE LYON 2</span>
+  <div class="footer-links">
+    <a href="https://github.com/Tcharis" class="footer-link">GitHub</a>
+    <a href="https://linkedin.com/in/aristide-tchetche" class="footer-link">LinkedIn</a>
+    <a href="mailto:aristidetchetche6@gmail.com" class="footer-link">Email</a>
+    <a href="index.html" class="footer-link">← Accueil</a>
+  </div>
+</footer>
+
+<script>
+/* ── COMPTEURS ANIMÉS ── */
+function animateCounters() {
+  document.querySelectorAll('.counter').forEach(function(el) {
+    var target = parseInt(el.dataset.target);
+    var duration = 1800;
+    var start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      var ease = 1 - Math.pow(1 - progress, 3);
+      var val = Math.floor(ease * target);
+      el.textContent = val.toLocaleString('fr-FR');
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target.toLocaleString('fr-FR');
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+/* ── BARRES ANIMÉES ── */
+function animateBars() {
+  document.querySelectorAll('.skill-fill').forEach(function(el) {
+    var w = el.dataset.width;
+    setTimeout(function(){ el.style.width = w + '%'; }, 200);
+  });
+  document.querySelectorAll('.note-fill').forEach(function(el) {
+    var w = el.dataset.width;
+    setTimeout(function(){ el.style.width = w + '%'; }, 300);
+  });
+  document.querySelectorAll('.lang-fill').forEach(function(el) {
+    var w = el.dataset.width;
+    setTimeout(function(){ el.style.width = w + '%'; }, 400);
+  });
+}
+
+/* ── BARRES SEMESTRES ── */
+function animateSemBars() {
+  document.querySelectorAll('.sem-bar').forEach(function(el) {
+    var h = el.dataset.height;
+    setTimeout(function(){
+      el.style.height = h + '%';
+    }, 500);
+  });
+}
+
+/* ── DONUT SVG ── */
+function animateDonut() {
+  var circ = 2 * Math.PI * 70; // ≈ 440
+  var data = [
+    { id:'d1', count:7,  total:51, offset:0 },
+    { id:'d2', count:16, total:51 },
+    { id:'d3', count:22, total:51 },
+    { id:'d4', count:6,  total:51 }
+  ];
+  var gap = 4;
+  var currentOffset = -110; // -110 = rotation de départ (top)
+
+  data.forEach(function(d, i) {
+    var el = document.getElementById(d.id);
+    var arcLen = (d.count / 51) * circ - gap;
+    var remain = circ - arcLen;
+    setTimeout(function() {
+      el.setAttribute('stroke-dasharray', arcLen + ' ' + remain);
+      el.setAttribute('stroke-dashoffset', currentOffset);
+    }, 300 + i * 200);
+    currentOffset -= arcLen + gap;
+  });
+}
+
+/* ── INTERSECTION OBSERVER ── */
+var observed = false;
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting && !observed) {
+      observed = true;
+      animateCounters();
+      animateBars();
+      animateSemBars();
+      animateDonut();
+    }
+  });
+}, { threshold: 0.1 });
+
+var firstCard = document.querySelector('.row-kpi');
+if (firstCard) observer.observe(firstCard);
+</script>
+</body>
+</html>
